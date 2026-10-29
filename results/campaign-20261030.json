@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-30",
+  "model": "Qwen2.5-0.5B-Instruct",
+  "hardware": "one NVIDIA A40",
+  "dtype": "float32",
+  "workload": {
+    "concurrent_requests": 4,
+    "output_tokens_per_request": 16
+  },
+  "order": "A B B A",
+  "measurements": [
+    {
+      "implementation": "seed",
+      "status": "pass",
+      "samples_tokens_per_second": [
+        64.0162709583899,
+        63.63042221206655,
+        63.92440484921279
+      ],
+      "median_tokens_per_second": 63.92440484921279,
+      "numeric_status": "pass",
+      "streaming_status": "pass",
+      "max_inflight": 4
+    },
+    {
+      "implementation": "generated",
+      "status": "pass",
+      "samples_tokens_per_second": [
+        149.37502148912554,
+        150.81782804959943,
+        151.2887098866225
+      ],
+      "median_tokens_per_second": 150.81782804959943,
+      "numeric_status": "pass",
+      "streaming_status": "pass",
+      "max_inflight": 4
+    },
+    {
+      "implementation": "generated",
+      "status": "pass",
+      "samples_tokens_per_second": [
+        147.73011452817042,
+        148.798791252657,
+        149.01309759640304
+      ],
+      "median_tokens_per_second": 148.798791252657,
+      "numeric_status": "pass",
+      "streaming_status": "pass",
+      "max_inflight": 4
+    },
+    {
+      "implementation": "seed",
+      "status": "pass",
+      "samples_tokens_per_second": [
+        64.33893873191023,
+        64.09760723638395,
+        64.16444820443836
+      ],
+      "median_tokens_per_second": 64.16444820443836,
+      "numeric_status": "pass",
+      "streaming_status": "pass",
+      "max_inflight": 4
+    }
+  ],
+  "generator": {
+    "model": "gpt-5.6-sol",
+    "wall_seconds": 77.68835354197654,
+    "usage": {
+      "input_tokens": 258104,
+      "cached_input_tokens": 226560,
+      "output_tokens": 6359,
+      "reasoning_output_tokens": 1325
+    }
+  },
+  "candidate_engine_sha256": "372e4eb54a94f729cc53cb8760c1594fc8ab3899ec585254419dfa1b1ec3c54e",
+  "scope": "Seeded development optimization against our initial unbatched runtime. Two independent executions per implementation, three warm repeats each. Not a vLLM/SGLang/VibeServe comparison or production SLO result."
+}

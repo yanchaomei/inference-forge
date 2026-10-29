@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-inference-forge"
+version = "0.1.0"
+requires-python = ">=3.10"
+description = "Execution-guided specialized inference engine pilot"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+inference = ["torch>=2.6,<3", "transformers>=5.3,<6", "safetensors>=0.7,<1"]
+test = ["pytest>=8.4,<10"]
+
+[project.scripts]
+inference-forge = "forge.campaign:main"
+forge-pilot = "forge.pilot:main"
+
+[tool.setuptools.packages.find]
+include = ["forge*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -1,0 +1,22 @@
+{
+  "task_id": "qwen25-05b-portable-v1",
+  "model_path": "@env:FORGE_MODEL_PATH",
+  "model_type": "qwen2",
+  "model_safetensors_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+  "dtype": "float32",
+  "device": "cuda",
+  "gpu_uuid": "@env:FORGE_GPU_UUID",
+  "seed": 4271,
+  "max_new_tokens": 16,
+  "max_context_tokens": 512,
+  "prompts": [
+    "The capital of France is",
+    "Explain why the sky appears blue in one sentence.",
+    "中国科学技术大学位于",
+    "def fibonacci(n):"
+  ],
+  "mean_logprob_error_max": 0.001,
+  "max_logprob_error_max": 0.01,
+  "timeout_seconds": 600,
+  "scope": "development bootstrap, not final holdout or performance comparison"
+}
