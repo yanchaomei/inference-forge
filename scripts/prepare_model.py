@@ -6,6 +6,7 @@ always comes from the checked-in official metadata, never from that mirror.
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -46,6 +47,8 @@ def main():
     entries = [e for e in metadata["siblings"] if e["rfilename"] != ".gitattributes"]
     destination = Path(args.destination).resolve()
     destination.mkdir(parents=True, exist_ok=True)
+    model_lock = (destination/".forge-preparation.lock").open("a")
+    fcntl.flock(model_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     receipt_path = destination / "forge-model-receipt.json"
     # A previous success must never survive a failed re-verification.
     receipt_path.unlink(missing_ok=True)
@@ -89,6 +92,7 @@ def main():
                "verified_at_unix": time.time(), "files": files}
     receipt_path.write_text(json.dumps(receipt, indent=2)+"\n")
     print(f"Model verified: {receipt_path}", flush=True)
+    model_lock.close()
 
 
 if __name__ == "__main__":
