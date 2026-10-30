@@ -8,3 +8,10 @@
 - 研究参考：[VibeServe](https://arxiv.org/abs/2605.06068)、[MetaInfer](https://arxiv.org/abs/2607.12875)、[Bespoke OLAP](https://arxiv.org/abs/2603.02001)。本版本的独立试验代码不等于上述系统的复现；后续引入其代码时按实际许可保留归属。
 
 部分代码和文档由 Coding Agent 辅助生成，并经过远程真实模型验证和人工／独立代理审查。已验证范围与失败记录见运行报告。
+# Design references
+
+The model/hardware/workload-specific engine product direction is informed by
+[Strata](https://github.com/Niko1221/Strata). Its design and reported performance
+are referenced in `docs/SPECIALIZATION.md`; no Strata engine code or performance
+result is included as an InferenceForge implementation or measurement.
+

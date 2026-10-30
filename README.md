@@ -1,10 +1,21 @@
 # InferenceForge
 
-**用 Coding Agent 构造专用推理引擎，在真实 GPU 上验证并反馈。**
+**为具体模型、硬件和场景，生成可独立运行的专用推理引擎。**
 
-InferenceForge is an execution-guided toolkit for building specialized inference runtimes. A coding agent changes the runtime; a fixed remote evaluator checks numerical behavior, request state, streaming output and performance.
+InferenceForge builds specialized inference engines for a specific model, hardware and workload. Coding agents construct and optimize the runtime with feedback from real execution; the resulting engine runs without an agent in its inference path.
 
 当前版本可从已运行的 Qwen2 引擎开始，自动调用 Codex CLI 改进模型执行与调度，再交给远程 A40 上的独立参考验收。适合研究和 AI 基础设施团队探索模型、设备、负载专用化。
+
+我们的交付单位是一套可部署的引擎：源码、启动方式、支持范围与同条件实测结果。构造环境可以复用；生成结果可以采用不同的算子、KV 布局、批处理和内存策略。设计取舍见 [特化引擎路线](docs/SPECIALIZATION.md)。
+
+## 引擎与目标
+
+| 模型 / 硬件 / 场景 | 当前状态 | 入口 |
+| --- | --- | --- |
+| Qwen2.5-0.5B / 单 A40 / 短请求并发 | 已生成、验收及测量的开发示例 | [运行生成引擎](engines/README.md) |
+| Qwen3-8B / 单 A40 / BF16 对话与批处理 | 目标与官方权重身份已固定；尚无 8B 正确性或速度结论 | [目标配置](targets/qwen3-8b-a40/target.json) |
+
+先做完整的 8B 引擎及强基线对照，再扩展长上下文、MoE 和其他硬件。构造方法对比 VibeServe、MetaInfer；生成产物的推理性能对比 vLLM、SGLang。这是两个不同问题，分别报告。
 
 ```text
 任务配置 → Coding Agent → 候选引擎 → 独立 GPU 评测
@@ -80,6 +91,8 @@ python -m pytest tests -q
 ```
 
 当前主任务为短上下文 Qwen2.5-0.5B，服务上限512 token、固定长度greedy输出。自动构造目前从可运行的种子开始；从空目录生成、8B规模、多硬件和同预算多次对照仍在推进。
+
+8B 准备工具在 [scripts/prepare_model.py](scripts/prepare_model.py)：消费目标配置，在 GPU 服务器下载指定 revision，并用官方记录校验全部分片、配置和 tokenizer。它只完成模型准备，不代表构造或推理验收成功。
 
 ## 参与与来源
 

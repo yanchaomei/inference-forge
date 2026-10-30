@@ -1,0 +1,36 @@
+{
+  "target_id": "qwen3-8b-a40-bf16",
+  "status": "preparing",
+  "model": {
+    "repository": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "architecture": "Qwen3ForCausalLM",
+    "dtype": "bfloat16",
+    "thinking": false
+  },
+  "hardware": {"gpu": "NVIDIA A40", "count": 1, "tensor_parallel_size": 1},
+  "workloads": [
+    {"name": "chat-latency", "input_tokens": 128, "output_tokens": 128, "concurrency": [1, 4]},
+    {"name": "batch-throughput", "input_tokens": 512, "output_tokens": 128, "concurrency": [8, 16]}
+  ],
+  "evaluation": {
+    "stage": "development",
+    "seed": 4271,
+    "sampling": "greedy",
+    "ignore_eos": true,
+    "warmup_requests": 4,
+    "requests_per_cell": 64,
+    "repeats": 3,
+    "max_model_len": 4096,
+    "metrics": ["output_tokens_per_second", "ttft_p50_ms", "ttft_p95_ms", "tpot_p50_ms", "tpot_p95_ms", "request_latency_p95_ms", "errors"]
+  },
+  "construction": {
+    "first_run_budget_seconds": 3600,
+    "max_rounds": 3,
+    "starting_points": ["from-scratch", "common-seed"],
+    "note": "Report starting points and generator models separately; do not pool them."
+  },
+  "performance_baselines": ["vllm", "sglang"],
+  "construction_baselines": ["VibeServe/VibeSys native task", "MetaInfer paper branch with explicit Qwen3-8B TP1 adaptation"],
+  "claim": "No 8B correctness or speed result has been established yet."
+}
