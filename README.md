@@ -4,7 +4,7 @@
 
 InferenceForge builds specialized inference engines for a specific model, hardware and workload. Coding agents construct and optimize the runtime with feedback from real execution; the resulting engine runs without an agent in its inference path.
 
-当前版本可从已运行的 Qwen2 引擎开始，自动调用 Codex CLI 改进模型执行与调度，再交给远程 A40 上的独立参考验收。适合研究和 AI 基础设施团队探索模型、设备、负载专用化。
+当前版本包含 Qwen2 自动构造示例，以及 Qwen3-8B 主机状态恢复和多会话实验。Coding Agent 生成与修改代码，远程 A40 执行固定验收；适合研究和 AI 基础设施团队探索模型、设备、负载专用化。
 
 我们的交付单位是一套可部署的引擎：源码、启动方式、支持范围与同条件实测结果。构造环境可以复用；生成结果可以采用不同的算子、KV 布局、批处理和内存策略。设计取舍见 [特化引擎路线](docs/SPECIALIZATION.md)。
 
@@ -13,7 +13,7 @@ InferenceForge builds specialized inference engines for a specific model, hardwa
 | 模型 / 硬件 / 场景 | 当前状态 | 入口 |
 | --- | --- | --- |
 | Qwen2.5-0.5B / 单 A40 / 短请求并发 | 已生成、验收及测量的开发示例 | [运行生成引擎](engines/README.md) |
-| Qwen3-8B / 单 A40 / BF16 对话与批处理 | 目标与官方权重身份已固定；尚无 8B 正确性或速度结论 | [目标配置](targets/qwen3-8b-a40/target.json) |
+| Qwen3-8B / 单 A40 / BF16 状态恢复与多会话 | 实验性运行时、实际生成组件及逐输出状态检查；尚无成熟框架优势 | [8B实验入口](experiments/qwen3_8b/README.md) |
 
 先做完整的 8B 引擎及强基线对照，再扩展长上下文、MoE 和其他硬件。构造方法对比 VibeServe、MetaInfer；生成产物的推理性能对比 vLLM、SGLang。这是两个不同问题，分别报告。
 
@@ -30,6 +30,7 @@ InferenceForge builds specialized inference engines for a specific model, hardwa
 - 统一远程参考、数值与缓存比较、流式文字及 token 检查、真实请求交错检查。
 - 预热和重复测量、错误留档、受限外部请求轨迹缩小。
 - 自动生成的批量解码示例，见 `examples/generated/batched/`。
+- 8B 主机 KV 保存/恢复，以及实际生成的配套存储与会话消费者；含四格交叉消融、显存预算与完整 logits 检查。
 
 ## 已测结果
 
@@ -41,6 +42,8 @@ InferenceForge builds specialized inference engines for a specific model, hardwa
 | Agent 生成的批量解码候选 | 150.82 token/s | 148.80 token/s |
 
 本次小负载配对比值几何平均约 **2.34×**。它是相对自身初版的开发对照；尚未证明优于 vLLM、SGLang、VibeServe，也不是生产 SLO 或大模型结果。详见 [实测数据](results/campaign-20261030.json) 与 [实验说明](docs/EXPERIMENTS.md)。
+
+2026-10-31 的8B实验中，锁页主机恢复组件相对自身初版快2.78–3.87倍，但恢复后16token总时间仅降低0.4%–4.6%。多会话联合版本的开发中位提升仅约0.815%，尚不足以证明稳健优势。完整[原始逐请求记录](results/qwen3-8b-sessions-20261031.json)与[复现范围](experiments/qwen3_8b/README.md)同时公开。
 
 ## 快速开始
 
@@ -90,7 +93,7 @@ export CUDA_VISIBLE_DEVICES=$FORGE_GPU_UUID
 python -m pytest tests -q
 ```
 
-当前主任务为短上下文 Qwen2.5-0.5B，服务上限512 token、固定长度greedy输出。自动构造目前从可运行的种子开始；从空目录生成、8B规模、多硬件和同预算多次对照仍在推进。
+首页快速开始仍对应短上下文 Qwen2.5-0.5B，服务上限512 token、固定长度greedy输出。8B实验采用独立依赖环境和入口，见[实验说明](experiments/qwen3_8b/README.md)。完整8B构造方法对照、多硬件、独立留出与生产服务性能仍在推进。
 
 8B 准备工具在 [scripts/prepare_model.py](scripts/prepare_model.py)：消费目标配置，在 GPU 服务器下载指定 revision，并用官方记录校验全部分片、配置和 tokenizer。它只完成模型准备，不代表构造或推理验收成功。
 

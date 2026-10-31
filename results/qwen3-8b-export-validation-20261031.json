@@ -1,0 +1,139 @@
+{
+  "scope": "independent exported-source portability validation, not a replacement for three-repeat research measurements",
+  "host": {
+    "status": "pass",
+    "scope": "state preservation relative to frozen engine",
+    "correctness_cases": 9,
+    "measurement_cases": 0,
+    "wall_seconds": 59.65035736747086,
+    "joint_optimization_implemented": false
+  },
+  "sessions": {
+    "status": "measured",
+    "scope": "single joint construction, synthetic trace, cross-combined components; not independent search or SOTA comparison",
+    "warmup_policy": "one complete trace per component combination, separately recorded and excluded from timing medians",
+    "warmups": {
+      "S0-E0": {
+        "status": "pass",
+        "scope": "observer-instrumented sequential development trace",
+        "gpu_session_budget_bytes": 805306368,
+        "turns": 24,
+        "wall_seconds_including_checks_and_cleanup": 8.126902166754007,
+        "sum_turn_ms": 7996.122797951102,
+        "cleanup": {
+          "gpu_remaining_bytes": 0,
+          "host_remaining_payload_bytes": 0,
+          "errors": []
+        }
+      },
+      "S1-E0": {
+        "status": "pass",
+        "scope": "observer-instrumented sequential development trace",
+        "gpu_session_budget_bytes": 805306368,
+        "turns": 24,
+        "wall_seconds_including_checks_and_cleanup": 7.262488610111177,
+        "sum_turn_ms": 7145.971945486963,
+        "cleanup": {
+          "gpu_remaining_bytes": 0,
+          "host_remaining_payload_bytes": 0,
+          "errors": []
+        }
+      },
+      "S0-E1": {
+        "status": "pass",
+        "scope": "observer-instrumented sequential development trace",
+        "gpu_session_budget_bytes": 805306368,
+        "turns": 24,
+        "wall_seconds_including_checks_and_cleanup": 7.43331125471741,
+        "sum_turn_ms": 7284.268992953002,
+        "cleanup": {
+          "gpu_remaining_bytes": 0,
+          "host_remaining_payload_bytes": 0,
+          "errors": []
+        }
+      },
+      "S1-E1": {
+        "status": "pass",
+        "scope": "observer-instrumented sequential development trace",
+        "gpu_session_budget_bytes": 805306368,
+        "turns": 24,
+        "wall_seconds_including_checks_and_cleanup": 7.996408793143928,
+        "sum_turn_ms": 7874.075461179018,
+        "cleanup": {
+          "gpu_remaining_bytes": 0,
+          "host_remaining_payload_bytes": 0,
+          "errors": []
+        }
+      }
+    },
+    "variants": {
+      "S0-E0": {
+        "status": "pass",
+        "sum_turn_ms": [
+          7157.834853976965
+        ],
+        "median_sum_turn_ms": 7157.834853976965
+      },
+      "S1-E0": {
+        "status": "pass",
+        "sum_turn_ms": [
+          7156.743770465255
+        ],
+        "median_sum_turn_ms": 7156.743770465255
+      },
+      "S0-E1": {
+        "status": "pass",
+        "sum_turn_ms": [
+          7154.343688860536
+        ],
+        "median_sum_turn_ms": 7154.343688860536
+      },
+      "S1-E1": {
+        "status": "pass",
+        "sum_turn_ms": [
+          7102.040598168969
+        ],
+        "median_sum_turn_ms": 7102.040598168969
+      }
+    },
+    "resident_reference": {
+      "status": "pass",
+      "scope": "observer-instrumented sequential development trace",
+      "gpu_session_budget_bytes": 4294967296,
+      "turns": 24,
+      "wall_seconds_including_checks_and_cleanup": 6.998371138237417,
+      "sum_turn_ms": 6891.862567514181,
+      "cleanup": {
+        "gpu_remaining_bytes": 0,
+        "host_remaining_payload_bytes": 0,
+        "errors": []
+      }
+    },
+    "resident_joint_control": {
+      "status": "pass",
+      "scope": "observer-instrumented sequential development trace",
+      "gpu_session_budget_bytes": 4294967296,
+      "turns": 24,
+      "wall_seconds_including_checks_and_cleanup": 7.046569440513849,
+      "sum_turn_ms": 6939.7875033319,
+      "cleanup": {
+        "gpu_remaining_bytes": 0,
+        "host_remaining_payload_bytes": 0,
+        "errors": []
+      }
+    }
+  },
+  "source_sha256": {
+    "experiments/qwen3_8b/host_roundtrip.py": "6c0ca0f6d7526b13e21a8417297715dd10338ab25b4c307593e60537d6b9a5b1",
+    "engines/qwen3_8b_kv/engine.py": "7cc44abbcba0ae65655d5b73d1d51c325143ec3c7ba5fc6a13f9bd0cf41b3ed4",
+    "engines/qwen3_8b_kv/kv_store.py": "f422166bd5afd35b08ab8912980db4678eb10a684d02cc3f1a700af9ab4bae99",
+    "experiments/qwen3_8b/host-store-contract.md": "e508f4825bc1dc47a52cfb54878f84dda304a8e9007723ba933903dc3e4ac862",
+    "experiments/qwen3_8b/session_matrix.py": "403b5c18c3ee4fd48fd07f7923efcc7ffee81938d157a3516b4d5800504ac1c8",
+    "experiments/qwen3_8b/baseline_consumer.py": "c4ca997b7c9dce2a6c202a623fbe364276976fce11b82c6cbee47257e2f6abb4",
+    "engines/qwen3_8b_sessions/consumer.py": "4b1351dd46df3757b9eac9108a05e13702562079ec9d67b98a423f0885ab03fc",
+    "engines/qwen3_8b_sessions/kv_store.py": "ae26f130f09d654f6d3267b78d15716e97af74d83bdefb27785936dec35b5568",
+    "experiments/qwen3_8b/session-contract.md": "bafd04109ddf9a3ed81d063dc02cd0a385263c38f5b5b8be834a3a1a0a2b8cbd"
+  },
+  "cpu_contract_tests": 25,
+  "publication_note": "GPU receipt follows the exported source; CPU CI checks source/data integrity and does not substitute for GPU validation."
+}

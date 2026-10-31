@@ -11,4 +11,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install '.[test]'
-      - run: python -m pytest tests/test_campaign.py tests/test_task.py tests/test_evaluate.py tests/test_replay.py tests/test_processes.py -q
+      - run: python -m pytest tests/test_campaign.py tests/test_task.py tests/test_evaluate.py tests/test_replay.py tests/test_processes.py tests/test_8b_export.py -q
+      - run: python -m compileall -q engines/qwen3_8b_kv engines/qwen3_8b_sessions experiments/qwen3_8b
