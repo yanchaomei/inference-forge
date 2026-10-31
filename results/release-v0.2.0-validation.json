@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "date": "2026-10-31",
+  "scope": "v0.2.0 public demo acceptance, not performance comparison",
+  "model": "Qwen2.5-0.5B-Instruct",
+  "model_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+  "hardware": "one NVIDIA A40",
+  "torch": "2.11.0+cu128",
+  "health_ready": true,
+  "http_output_tokens": 16,
+  "stream_token_and_unicode_text_equal": true,
+  "concurrent_requests": 4,
+  "concurrent_output_tokens_each": 16,
+  "invalid_length_http_status": 400,
+  "full_vocab_reference_comparisons": 12,
+  "full_vocab_max_abs_error": 5.340576171875e-05,
+  "prior_states_unchanged": true,
+  "source_sha256": {
+    "examples/generated/batched/engine.py": "372e4eb54a94f729cc53cb8760c1594fc8ab3899ec585254419dfa1b1ec3c54e",
+    "examples/generated/batched/server.py": "c6058f57c289d20b7644e1db0a79c294d7a26abeeece08f50748f0a3e00f3827"
+  },
+  "cpu_contract_tests_passed": 25,
+  "package_install_version": "0.2.0",
+  "wheel_build": "pass"
+}

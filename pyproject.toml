@@ -4,11 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-inference-forge"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.10"
 description = "Execution-guided specialized inference engine pilot"
 readme = "README.md"
 license = {text = "MIT"}
+
+[project.urls]
+Homepage = "https://yanchaomei.github.io/inference-forge/"
+Repository = "https://github.com/yanchaomei/inference-forge"
+Documentation = "https://github.com/yanchaomei/inference-forge/blob/main/docs/QUICKSTART.md"
+Issues = "https://github.com/yanchaomei/inference-forge/issues"
 
 [project.optional-dependencies]
 inference = ["torch>=2.6,<3", "transformers>=5.3,<6", "safetensors>=0.7,<1"]
