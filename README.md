@@ -2,7 +2,7 @@
 
 **为具体模型、硬件和场景，生成可独立运行的专用推理引擎。**
 
-[快速运行](docs/QUICKSTART.md) · [作品介绍 PDF](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) · [观看演示](https://yanchaomei.github.io/inference-forge/) · [v0.2.0 源码与材料](https://github.com/yanchaomei/inference-forge/releases/tag/v0.2.0) · [参赛提交说明](docs/SUBMISSION.md)
+[快速运行](docs/QUICKSTART.md) · [34页作品介绍 PDF](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) · [观看演示](https://yanchaomei.github.io/inference-forge/) · [v0.2.0 运行源码](https://github.com/yanchaomei/inference-forge/releases/tag/v0.2.0) · [参赛提交说明](docs/SUBMISSION.md)
 
 InferenceForge builds specialized inference engines for a specific model, hardware and workload. Coding agents construct and optimize the runtime with feedback from real execution; the resulting engine runs without an agent in its inference path.
 

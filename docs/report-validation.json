@@ -1,0 +1,13 @@
+{
+  "edition": "2026-10-31 detailed submission report",
+  "pages": 34,
+  "embedded_images": 8,
+  "generated_illustrations": 4,
+  "data_charts": 4,
+  "pdf_sha256": "9b877ddbdd4424d55c4babe314d4bf0c4557b6a769bf15055f5432737747f306",
+  "runtime_baseline_commit": "03b8a0a8443e658e7f3e83e188bb5e066e7cffd0",
+  "manuscript_sha256": "0c0f7abe92a2dd7f453e13a1726a531194bbb0fa2839a7db5c11eea1f1a17deb",
+  "layout_review": "All34 pages rendered and reviewed; selected dense/image/code pages inspected at full size; final link-only change on page34 rechecked.",
+  "content_review": "Source and result cross-check; required factual corrections applied.",
+  "rebuild_source": "https://github.com/yanchaomei/inference-forge/releases/download/submission-20261031/InferenceForge-report-source.zip"
+}
