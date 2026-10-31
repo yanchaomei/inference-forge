@@ -2,6 +2,8 @@
 
 **为具体模型、硬件和场景，生成可独立运行的专用推理引擎。**
 
+[快速运行](docs/QUICKSTART.md) · [作品介绍 PDF](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) · [观看演示](https://yanchaomei.github.io/inference-forge/) · [v0.2.0 源码与材料](https://github.com/yanchaomei/inference-forge/releases/tag/v0.2.0) · [参赛提交说明](docs/SUBMISSION.md)
+
 InferenceForge builds specialized inference engines for a specific model, hardware and workload. Coding agents construct and optimize the runtime with feedback from real execution; the resulting engine runs without an agent in its inference path.
 
 当前版本包含 Qwen2 自动构造示例，以及 Qwen3-8B 主机状态恢复和多会话实验。Coding Agent 生成与修改代码，远程 A40 执行固定验收；适合研究和 AI 基础设施团队探索模型、设备、负载专用化。
@@ -47,6 +49,20 @@ InferenceForge builds specialized inference engines for a specific model, hardwa
 
 ## 快速开始
 
+**先运行已有引擎，不需要 Codex 或其他模型服务账号。** 在具备 NVIDIA GPU 的 Linux 主机上：
+
+```bash
+git clone --branch v0.2.0 https://github.com/yanchaomei/inference-forge.git
+cd inference-forge
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[inference,test]'
+```
+
+然后按 [运行指南](docs/QUICKSTART.md) 下载 Qwen2.5-0.5B-Instruct，启动生成的批处理引擎，发送普通和流式请求。服务提供 `/health`、`/v1/models` 和 `/v1/completions`。8B 存储与推理实验使用 [独立入口及依赖](experiments/qwen3_8b/README.md)。
+
+## 生成和优化新引擎
+
 需要本地 Python、已安装并登录的 Codex CLI，以及可 SSH 访问、安装 tmux 的 Linux GPU 服务器。代码编辑与生成在本地；模型执行在服务器。凭据不上传到 GPU 服务器。
 
 ```bash
@@ -85,6 +101,8 @@ forge-pilot --task tasks/qwen25_05b/task.json --output results/raw/local-check
 ```
 
 ## 验证与范围
+
+v0.2.0发布前已在独立目录完成安装、25项CPU检查及真实A40复验：普通HTTP、中文SSE一致性、四请求并发、输入限制和12次完整词表参考比较通过。见[发布验证记录](results/release-v0.2.0-validation.json)。该检查确认运行路径，不是新增性能比较。
 
 在 GPU 环境设好模型路径后运行：
 
