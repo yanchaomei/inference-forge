@@ -29,6 +29,13 @@ Qwen3-8B revision `b968826d9c46dd6066d109eabc6255188de91218`、BF16、TP1、单A
 
 在GPU服务器准备上述独立依赖环境，并按 [目标配置](../../targets/qwen3-8b-a40/target.json) 使用 `scripts/prepare_model.py` 准备权重。仓库不分发权重。评测器会逐文件核对 `model.json` 的官方身份。
 
+Linux GPU环境的依赖入口如下；CUDA 12.8安装源与[PyTorch官方版本说明](https://pytorch.org/get-started/previous-versions/)一致：
+
+```bash
+python3 -m venv .venv-8b
+.venv-8b/bin/python -m pip install -r experiments/qwen3_8b/requirements.txt
+```
+
 ```bash
 export FORGE_MODEL_PATH=/path/to/Qwen3-8B-b968826
 export FORGE_GPU_UUID=GPU-your-id
@@ -103,3 +110,5 @@ PYTHONPATH=. PYTHONNOUSERSITE=1 \
 独立主机恢复实验中，第二版恢复速度为首版2.78–3.87倍，但恢复后16token总时间仅降低0.4%–4.6%；不能把组件加速当成整个框架加速。
 
 可公开原始逐请求记录在 [多会话结果](../../results/qwen3-8b-sessions-20261031.json)，主机恢复摘要在 [主机恢复结果](../../results/qwen3-8b-host-state-20261031.json)，生成信息与源码身份在 [provenance.json](provenance.json)。记录不包含内部地址、GPU UUID、凭据或业务数据。
+
+公开源码还在独立目录重新完成了接口检查、九组8B主机状态验证和一次多会话矩阵，见[导出验证回执](../../results/qwen3-8b-export-validation-20261031.json)。这次用于检查公开入口可运行，不替换上述三次重复的研究数据。
