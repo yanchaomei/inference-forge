@@ -1,0 +1,32 @@
+{
+  "status": "experimental_state_preservation_validated; no SOTA or general model-accuracy claim",
+  "model": "Qwen/Qwen3-8B",
+  "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "hardware": "single NVIDIA A40, shared host",
+  "dtype": "bfloat16",
+  "generator": "gpt-5.6-sol via Codex CLI",
+  "engine_origin": "prior generated engine, frozen in these storage/session experiments",
+  "session_control_origin": "hand-written generic LRU consumer",
+  "source_sha256": {
+    "engines/qwen3_8b_kv/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engines/qwen3_8b_kv/engine.py": "7cc44abbcba0ae65655d5b73d1d51c325143ec3c7ba5fc6a13f9bd0cf41b3ed4",
+    "engines/qwen3_8b_kv/kv_store.py": "f422166bd5afd35b08ab8912980db4678eb10a684d02cc3f1a700af9ab4bae99",
+    "engines/qwen3_8b_sessions/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engines/qwen3_8b_sessions/engine.py": "7cc44abbcba0ae65655d5b73d1d51c325143ec3c7ba5fc6a13f9bd0cf41b3ed4",
+    "engines/qwen3_8b_sessions/consumer.py": "4b1351dd46df3757b9eac9108a05e13702562079ec9d67b98a423f0885ab03fc",
+    "engines/qwen3_8b_sessions/kv_store.py": "ae26f130f09d654f6d3267b78d15716e97af74d83bdefb27785936dec35b5568"
+  },
+  "construction": {
+    "host_store_call_seconds": [
+      58.71336804199973,
+      80.80886237499999
+    ],
+    "joint_call_seconds": [
+      231.8501588750005,
+      145.81187924999904,
+      213.8144735829992
+    ],
+    "joint_second_call_status": "no code changes; requested design approval; counted in round-2 cost",
+    "joint_round2_total_seconds": 359.62635283299824
+  }
+}

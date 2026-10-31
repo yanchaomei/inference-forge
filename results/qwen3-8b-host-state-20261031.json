@@ -1,0 +1,53 @@
+{
+  "scope": "one generated host-storage baseline and one feedback-driven optimization, frozen generated 8B consumer; not joint synthesis or SOTA comparison",
+  "comparison": [
+    {
+      "input_tokens": 128,
+      "restore_ms_first": 4.184115678071976,
+      "restore_ms_optimized": 1.0821870528161526,
+      "restore_speedup": 3.8663516322651796,
+      "resume16_ms_first": 541.7123483493924,
+      "resume16_ms_optimized": 539.4946346059442,
+      "resume16_reduction_fraction": 0.004093895496762534
+    },
+    {
+      "input_tokens": 512,
+      "restore_ms_first": 12.346131261438131,
+      "restore_ms_optimized": 3.3424803987145424,
+      "restore_speedup": 3.69370341444223,
+      "resume16_ms_first": 567.5450288690627,
+      "resume16_ms_optimized": 558.7020651437342,
+      "resume16_reduction_fraction": 0.015581078637847745
+    },
+    {
+      "input_tokens": 1024,
+      "restore_ms_first": 20.484705921262503,
+      "restore_ms_optimized": 6.358586717396975,
+      "restore_speedup": 3.2215815922139948,
+      "resume16_ms_first": 601.2590727768838,
+      "resume16_ms_optimized": 587.0635393075645,
+      "resume16_reduction_fraction": 0.02360967860951857
+    },
+    {
+      "input_tokens": 2048,
+      "restore_ms_first": 35.946551244705915,
+      "restore_ms_optimized": 12.392691802233458,
+      "restore_speedup": 2.9006249665813115,
+      "resume16_ms_first": 659.3109248206019,
+      "resume16_ms_optimized": 635.6283575296402,
+      "resume16_reduction_fraction": 0.035920180296429516
+    },
+    {
+      "input_tokens": 3072,
+      "restore_ms_first": 51.34163051843643,
+      "restore_ms_optimized": 18.441606778651476,
+      "restore_speedup": 2.7840106957421384,
+      "resume16_ms_first": 717.6168696023524,
+      "resume16_ms_optimized": 684.6586200408638,
+      "resume16_reduction_fraction": 0.04592736174074552
+    }
+  ],
+  "validation_cases_per_variant": 9,
+  "hidden_cuda_controls_per_variant": 2,
+  "scope_note": "state preservation relative to frozen engine; synthetic all-hit development microbenchmarks"
+}

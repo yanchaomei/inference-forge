@@ -17,4 +17,8 @@ python -m examples.generated.batched.server \
 
 该模块使用标准 Python namespace package 从仓库源码启动。HTTP 入口为 `127.0.0.1:8000/v1/completions`，支持本项目固定长度 greedy 请求和 SSE，不宣称完整 OpenAI 协议兼容。
 
-实测范围与原始数值见 [运行记录](../results/campaign-20261030.json)。Qwen3-8B 仍在准备，不提供占位引擎或虚构速度。
+实测范围与原始数值见 [运行记录](../results/campaign-20261030.json)。
+
+## Qwen3-8B / A40 / 状态恢复与多会话实验
+
+新增 [主机KV组件](qwen3_8b_kv/README.md)与[配套会话运行时](qwen3_8b_sessions/README.md)。它们在真实8B权重上验证过状态保持与显存预算，但仍为实验性API，没有完整HTTP服务或成熟框架性能优势。依赖、生成和评测方式见[统一实验入口](../experiments/qwen3_8b/README.md)。
