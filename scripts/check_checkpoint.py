@@ -48,7 +48,7 @@ def main():
     ]
     prompts = ['The capital of France is', '中国科学技术大学位于'] + [
         tokenizer.apply_chat_template(m, tokenize=False, add_generation_prompt=True) for m in conversations]
-    task = {'model_path':str(model),'dtype':'float32','device':'cpu','task_id':'installed-checkpoint-cpu',
+    task = {'model_path':str(model),'dtype':'float32','device':'cpu','task_id':'installed-checkpoint-cpu','seed':4271,
             'prompts':prompts,'max_new_tokens':8,'mean_logprob_error_max':.001,'max_logprob_error_max':.01}
     golden = generate_reference(task, out/'reference.json')
     gc.collect()
