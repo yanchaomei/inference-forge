@@ -1,35 +1,36 @@
-# 直接运行与演示
+# Quickstart
 
-先运行已生成的Qwen2.5-0.5B引擎，再按需使用构造器或8B实验。已有引擎运行时不需要Coding Agent、API密钥或远程模型服务。
+Run the included Qwen2.5-0.5B engine and send your first request. No coding-agent account is needed. [中文入口](../README.zh-CN.md) · [API](API.md) · [Model support](SUPPORTED_MODELS.md)
 
-## 1. 准备环境
+## Install
 
-Linux、Python 3.10以上、NVIDIA GPU及可用驱动。已验证单A40；以下0.5B示例使用float32，总上下文最多512 token，输出1–64 token。8B依赖及运行范围见[独立指南](../experiments/qwen3_8b/README.md)。
+Use a Linux machine with Python 3.10+, an NVIDIA GPU, and a working CUDA-enabled PyTorch installation. A single A40 is the measured hardware for this engine. The runtime uses float32, a 512-token total context limit, and fixed-length greedy output of 1–64 tokens.
 
 ```bash
-git clone --branch v0.2.0 https://github.com/yanchaomei/inference-forge.git
+git clone https://github.com/yanchaomei/inference-forge.git
 cd inference-forge
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[inference,test]'
+python -m pip install '.[inference]'
 nvidia-smi
+inference-forge doctor --json
+inference-forge models --json
 ```
 
-后续命令在仓库根目录执行。选择空闲GPU；下例选择编号0：
+This installs from the checkout; the package is not currently published on PyPI. `doctor` reports dependencies and CUDA availability. It does not load a model. Add `--require-gpu` when a script should fail if CUDA is unavailable. Keep the virtual environment active in each terminal used below.
+
+## Download the model
+
+Choose an available GPU and a model directory. The example pins the model revision used by the existing 0.5B task:
 
 ```bash
 export CUDA_VISIBLE_DEVICES=0
 export FORGE_MODEL_PATH="$PWD/cache/models/Qwen2.5-0.5B-Instruct"
-```
 
-## 2. 下载模型
-
-权重从Qwen官方仓库单独下载，固定本示例revision：
-
-```bash
 python - <<'PY'
 import os
 from huggingface_hub import snapshot_download
+
 snapshot_download(
     repo_id="Qwen/Qwen2.5-0.5B-Instruct",
     revision="7ae557604adf67be50417f59c2c2f167def9a775",
@@ -38,62 +39,101 @@ snapshot_download(
 PY
 ```
 
-已有模型时直接将`FORGE_MODEL_PATH`指向本地目录。模型与tokenizer下载完成后，推理服务离线读取权重。固定验收会核对权重身份；更换版本需另行记录。
+If you already have this checkpoint, set `FORGE_MODEL_PATH` to its local directory containing `config.json`, tokenizer files, and weights. Serving reads local files after download. Model weights are not included in this repository; follow the model publisher's license.
 
-## 3. 启动已生成的服务
+## Start the service
 
 ```bash
-python -m examples.generated.batched.server \
-  --model "$FORGE_MODEL_PATH" --dtype float32 --port 8000 \
+inference-forge serve "$FORGE_MODEL_PATH" \
+  --port 8000 --served-model-name qwen2.5-0.5b \
   --event-log runs/demo-events.jsonl
 ```
 
-看到`"event": "ready"`后，在另一终端执行：
+When the service reports `"event": "ready"`, use another terminal:
 
 ```bash
 curl --fail http://127.0.0.1:8000/health
+curl --fail http://127.0.0.1:8000/v1/models
 
 curl --fail http://127.0.0.1:8000/v1/completions \
   -H 'Content-Type: application/json' \
-  -d '{"prompt":"The capital of France is","max_tokens":16}'
-
-curl --fail -N http://127.0.0.1:8000/v1/completions \
-  -H 'Content-Type: application/json' \
-  -d '{"prompt":"中国科学技术大学位于","max_tokens":16,"stream":true}'
+  -d '{"model":"qwen2.5-0.5b","prompt":"The capital of France is","max_tokens":16,"temperature":0}'
 ```
 
-健康检查返回`ready: true`；普通请求返回`text`、`token_ids`、`usage`；流式请求返回逐token事件和最终`data: [DONE]`。这是项目自身的completions协议，不是聊天界面，也不承诺完整OpenAI API兼容。固定长度greedy输出的结束原因通常为`length`。
+The completion includes `choices[0].text`, token usage, and the original `text` and `token_ids` fields. The model name must match `--served-model-name` when supplied.
 
-服务监听`127.0.0.1`。使用远程GPU时，在本地另一终端建立转发，再在本地访问同一地址：
+## Send a chat request
+
+```bash
+python -m pip install 'openai>=1.50,<3'
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8000/v1", api_key="unused")
+response = client.chat.completions.create(
+    model="qwen2.5-0.5b",
+    messages=[
+        {"role": "system", "content": "Answer briefly."},
+        {"role": "user", "content": "What does a KV cache store?"},
+    ],
+    max_tokens=32,
+    temperature=0,
+)
+print(response.choices[0].message.content)
+print(response.usage)
+```
+
+`api_key="unused"` satisfies the SDK's client setup; the service has no built-in authentication. Chat accepts plain-text `system`, `user`, and `assistant` messages and applies the tokenizer's chat template. The template and conversation history count toward the 512-token context limit.
+
+## Stream the output
+
+Using the same client:
+
+```python
+stream = client.chat.completions.create(
+    model="qwen2.5-0.5b",
+    messages=[{"role": "user", "content": "用一句话介绍中国科学技术大学。"}],
+    max_tokens=32,
+    temperature=0,
+    stream=True,
+    stream_options={"include_usage": True},
+)
+for chunk in stream:
+    if chunk.choices:
+        print(chunk.choices[0].delta.content or "", end="", flush=True)
+    if chunk.usage:
+        print("\nUsage:", chunk.usage)
+```
+
+Output is fixed-length greedy decoding: generation finishes after `max_tokens` with `finish_reason="length"`, including when an EOS token appears earlier. It may contain special tokens. See the [API reference](API.md) for supported controls and errors.
+
+## Use a remote GPU
+
+Run the installation and service on the GPU machine. From your client machine, forward its loopback port:
 
 ```bash
 ssh -L 8000:127.0.0.1:8000 user@gpu-host
 ```
 
-结束演示时，在服务终端按`Ctrl+C`。请求接收、调度与完成事件保存在`runs/demo-events.jsonl`。
+Then use the same local SDK address. The service binds to `127.0.0.1` by default. Use `--host` only when you need another interface, with authentication and TLS provided by your gateway. Stop the service with `Ctrl+C`; `--event-log` records request and scheduling events.
 
-## 4. 检查代码与构造新候选
+## Troubleshooting
 
-无GPU的环境可仅安装`.[test]`，检查构造与任务接口：
+| Symptom | Next step |
+| --- | --- |
+| `serve` is not recognized | Install the current checkout into the active environment. The v0.2.0 CLI predates these subcommands. |
+| CUDA is unavailable | Read `doctor --json` and `nvidia-smi`; check the selected GPU and CUDA support in PyTorch. |
+| Model or tokenizer cannot be found | Point to the complete local checkpoint directory, not a single weights file. |
+| Port is in use | Change `--port` and the client URL together. |
+| HTTP 400 | Check `max_tokens` (1–64), total context (512), plain-text messages, and supported parameters. |
+| HTTP 404 for a model | Use the name returned by `/v1/models`. |
+| No coding-agent login | Serving works without it. Login is needed only for construction. |
 
-```bash
-python -m pytest tests/test_campaign.py tests/test_task.py \
-  tests/test_evaluate.py tests/test_replay.py tests/test_processes.py \
-  tests/test_8b_export.py -q
-```
+## Next steps
 
-生成新引擎使用已登录的Codex CLI及独立GPU评测环境，完整命令见[README构造流程](../README.md#生成和优化新引擎)。8B的KV保存/恢复、多会话组合和构造入口见[8B实验指南](../experiments/qwen3_8b/README.md)。
-
-## 常见问题
-
-| 现象 | 处理 |
-|---|---|
-| CUDA不可用 | 检查`nvidia-smi`、GPU选择及所装PyTorch是否支持CUDA |
-| 找不到模型或tokenizer | 确认下载完整，模型路径指向包含`config.json`的目录 |
-| 端口已被占用 | 更换启动参数`--port`，并同步修改请求地址 |
-| 请求400 | 输入与输出总长度需≤512；`max_tokens`需为1–64的整数 |
-| 没有Codex登录 | 可以直接运行已有服务；只有构造新候选时需要生成器登录 |
-
-演示视频及作品说明见[提交入口](SUBMISSION.md)。视频展示0.5B构造实例；8B实验尚无完整HTTP服务与成熟框架性能优势。
-
-2026-10-31已在单A40、Torch2.11环境重新验证上述服务入口：普通及流式输出一致、四请求并发正常、无效长度返回400，12次完整词表参考比较通过。原始公开回执见[发布验证记录](../results/release-v0.2.0-validation.json)。
+- [API reference](API.md): text completions, streaming, and error handling.
+- [Development](DEVELOPMENT.md): code layout, verification, and candidate construction.
+- [8B experiments](../experiments/qwen3_8b/README.md): separate environment and KV/session APIs.
+- [v0.2.0 quickstart](https://github.com/yanchaomei/inference-forge/blob/v0.2.0/docs/QUICKSTART.md): reproduce the historical release with its original commands.

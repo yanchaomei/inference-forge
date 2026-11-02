@@ -1,34 +1,56 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="InferenceForge：面向模型、硬件与场景的专用推理引擎构造工具链。开源代码、作品介绍和演示视频。">
-<title>InferenceForge · 开源代码与作品演示</title>
+<meta name="description" content="Build workload-specific inference engines with execution feedback. Install, serve through the OpenAI SDK, or construct a new engine.">
+<title>InferenceForge — Build and run specialized inference engines</title>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#101b2a;color:#edf3f9;font:16px/1.75 system-ui,sans-serif}main{max-width:1040px;margin:auto;padding:56px 24px}h1{font-size:clamp(38px,7vw,64px);line-height:1.12;letter-spacing:-2px;margin:16px 0}h2{font-size:23px;margin:8px 0 10px}p{margin:12px 0}.eyebrow{color:#78dace;font-size:13px;letter-spacing:2px}.lead{font-size:22px;max-width:800px;color:#d4e0eb}.muted{color:#b4c3d2}.actions{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0}.actions a{padding:11px 18px;border-radius:8px;border:1px solid #41556a;text-decoration:none;font-weight:650}.actions a:first-child{background:#86e3cf;color:#102720;border-color:#86e3cf}a{color:#86e3cf}section{margin-top:40px}.card{padding:24px;border:1px solid #304257;border-radius:14px;background:#142235}video{display:block;width:100%;aspect-ratio:16/9;border-radius:10px;background:#000}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tag{display:inline-block;padding:3px 10px;border:1px solid #45566c;border-radius:20px;font-size:12px;color:#bcd0de}.flow{padding:18px;border-radius:8px;background:#0c1623;font-size:15px;overflow-wrap:anywhere}.fine{font-size:13px;color:#a9bdcd}footer{margin-top:40px;border-top:1px solid #304257;padding-top:20px}@media(max-width:650px){main{padding:30px 18px}.grid{grid-template-columns:1fr}.lead{font-size:19px}.card{padding:18px}}
+:root{color-scheme:light;--ink:#173247;--muted:#536979;--teal:#087f81;--line:#dce6ec;--paper:#f6f9fb}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font:16px/1.7 system-ui,-apple-system,sans-serif;background:white}a{color:var(--teal);text-underline-offset:3px}.wrap{max-width:1120px;margin:auto;padding:0 28px}header{border-bottom:1px solid var(--line)}.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.brand{font-size:21px;font-weight:750;text-decoration:none;color:var(--ink)}.brand span{color:var(--teal)}nav{display:flex;gap:22px;flex-wrap:wrap;font-size:14px}nav a{color:var(--muted);text-decoration:none}main{padding:65px 0 30px}.eyebrow{font-size:12px;font-weight:700;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase}h1{font-size:clamp(38px,5.8vw,62px);line-height:1.08;letter-spacing:-2px;margin:18px 0 24px;max-width:830px}h2{font-size:28px;line-height:1.3;margin:0 0 12px;letter-spacing:-.5px}h3{font-size:18px;line-height:1.4;margin:10px 0}.lead{font-size:20px;color:var(--muted);max-width:800px}.buttons{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}.button{padding:10px 19px;border:1px solid var(--line);border-radius:7px;text-decoration:none;font-weight:650}.primary{background:var(--teal);color:white;border-color:var(--teal)}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:38px}.terminal{background:#12283a;color:#d5e7ec;border-radius:12px;padding:23px;overflow:auto}.terminal-title{font:12px system-ui;color:#85bdbd;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}pre{margin:0;font:13px/1.9 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:2}.terminal .cmd{color:#9ee8d5}.terminal .note{color:#98b4c4}.fine{font-size:13px;color:var(--muted)}section{margin-top:68px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{border:1px solid var(--line);border-radius:10px;padding:23px;background:white}.card p{color:var(--muted);font-size:15px}.number{font-size:12px;color:var(--teal);font-weight:700;letter-spacing:1px}.card a{font-size:14px;font-weight:650}.support{width:100%;border-collapse:collapse;margin-top:22px;font-size:14px}.support th,.support td{text-align:left;border-bottom:1px solid var(--line);padding:15px 12px;vertical-align:top}.support th{background:var(--paper);font-size:12px;text-transform:uppercase;letter-spacing:.6px}.tag{display:inline-block;padding:2px 9px;border-radius:20px;background:#e9f5f1;color:#1a665a;font-size:12px;white-space:nowrap}.tag.study{background:#edf1f7;color:#4d617a}.resources{display:grid;grid-template-columns:1.15fr 1fr;gap:25px;padding:27px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}video{display:block;width:100%;border-radius:8px;background:#12283a}.resource-links{padding:0;list-style:none}.resource-links li{margin:12px 0}.resource-links span{display:block;color:var(--muted);font-size:14px}.community{padding:28px;border-radius:12px;background:#edf7f4}.community p{max-width:800px}footer{border-top:1px solid var(--line);margin-top:60px;padding:22px 0;color:var(--muted);font-size:13px}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}@media(max-width:760px){.wrap{padding:0 20px}.nav{padding-top:15px;padding-bottom:15px}nav{gap:15px}main{padding-top:38px}.hero-grid,.grid,.resources{grid-template-columns:1fr}h1{letter-spacing:-1.2px}.lead{font-size:18px}.support{font-size:12px}.support th,.support td{padding:12px 6px}.resources{padding:18px}section{margin-top:46px}}
 </style>
 </head>
-<body><main>
-<div class="eyebrow">OPEN SOURCE · AI INFRASTRUCTURE</div>
-<h1>InferenceForge</h1>
-<p class="lead">为具体模型、硬件与场景，构造可独立运行的专用推理引擎。</p>
-<p class="muted">Coding Agent 生成代码，真实 GPU 执行与校验形成反馈。生成后的推理引擎独立运行，支持继续特化计算、KV 存储和请求调度。</p>
-<nav class="actions" aria-label="作品提交材料">
-<a href="https://github.com/yanchaomei/inference-forge">查看完整代码</a>
-<a href="project-introduction.pdf">下载34页作品介绍 PDF</a>
-<a href="#demo">观看演示视频</a>
-<a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/QUICKSTART.md">快速运行</a>
-</nav>
-<section id="demo" class="card">
-<h2>90 秒了解构造与运行流程</h2>
-<video controls playsinline preload="metadata" poster="demo-cover.png" aria-label="InferenceForge 0.5B构造实例字幕演示"><source src="demo.mp4" type="video/mp4">浏览器不支持视频，请使用下方文件链接。</video>
-<p class="fine">2026-10-30 真实运行记录回放，等待已压缩，无配音，非实时录屏。展示 Qwen2.5-0.5B / 单 A40 的构造实例；8B实验另见下方源码和介绍文档。</p>
-<p><a href="demo.mp4">打开视频文件</a> · <a href="https://github.com/yanchaomei/inference-forge/releases/tag/v0.2.0">下载 v0.2.0 源码与材料</a></p>
-</section>
-<section class="grid">
-<article class="card"><span class="tag">可运行示例</span><h2>独立推理服务</h2><p>Qwen2.5-0.5B 引擎包含权重装载、KV 管理、批量解码与 HTTP/SSE 服务。准备权重后即可运行，无需生成器账号。</p><a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/QUICKSTART.md">从安装到流式请求 →</a></article>
-<article class="card"><span class="tag">8B 实验入口</span><h2>存储与推理共同特化</h2><p>公开 Qwen3-8B 主机 KV 保存／恢复、生成的多会话消费者，以及完整输出检查和四种组件组合的实测记录。</p><a href="https://github.com/yanchaomei/inference-forge/blob/main/experiments/qwen3_8b/README.md">查看源码与复现步骤 →</a></article>
-</section>
-<section class="card"><h2>从需求到可运行产物</h2><div class="flow">模型、硬件与负载 → Coding Agent → 候选引擎 → 固定 GPU 验收 → 结果与失败反馈 → 下一轮构造</div><p>可复用的是构造和执行反馈环境，交付的是独立源码、启动方式、支持范围与原始结果。适用于专用推理部署探索、KV 存储实验和基础软件研发。</p><p class="fine">0.5B 的约2.34×为相对本项目初版的小负载开发对照；8B联合收益约0.815%，尚不足以证明稳健优势。当前未证明优于vLLM/SGLang，也未宣称生产服务能力。</p></section>
-<footer class="fine">MIT 开源 · 中国科学技术大学 · <a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/SUBMISSION.md">参赛提交说明</a> · <a href="https://github.com/yanchaomei/inference-forge/issues">问题反馈</a></footer>
-</main></body></html>
+<body>
+<header><div class="wrap nav"><a class="brand" href="./">Inference<span>Forge</span></a><nav aria-label="Main navigation">
+<a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/QUICKSTART.md">Quickstart</a>
+<a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/API.md">API</a>
+<a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/DEVELOPMENT.md">Develop</a>
+<a href="https://github.com/yanchaomei/inference-forge/blob/main/README.zh-CN.md" lang="zh-CN">简体中文</a>
+<a href="https://github.com/yanchaomei/inference-forge">GitHub ↗</a></nav></div></header>
+<main><div class="wrap">
+<div class="eyebrow">Open source · MIT · Execution-guided construction</div>
+<h1>Inference code shaped<br>for your workload.</h1>
+<p class="lead">Build specialized inference engines for a model, a GPU, and a request pattern. Use execution feedback to improve the code, then run the resulting engine independently.</p>
+<div class="buttons"><a class="button primary" href="https://github.com/yanchaomei/inference-forge/blob/main/docs/QUICKSTART.md">Get started</a><a class="button" href="https://github.com/yanchaomei/inference-forge">Explore the code</a><a class="button" href="https://github.com/yanchaomei/inference-forge/releases">Releases</a></div>
+<div class="hero-grid">
+<div class="terminal"><div class="terminal-title">Install from the source checkout</div><pre><span class="cmd">git clone</span> https://github.com/yanchaomei/inference-forge
+<span class="cmd">cd</span> inference-forge
+<span class="cmd">pip install</span> '.[inference]'
+<span class="cmd">inference-forge serve</span> /path/to/Qwen2.5-0.5B-Instruct \
+  --served-model-name qwen2.5-0.5b</pre></div>
+<div class="terminal"><div class="terminal-title">Connect with a familiar client</div><pre>from openai import OpenAI
+client = OpenAI(
+    base_url="http://127.0.0.1:8000/v1",
+    api_key="unused",
+)
+<span class="note"># Text, plain-text chat, and SSE streaming</span>
+reply = client.chat.completions.create(
+    model="qwen2.5-0.5b",
+    messages=[{"role":"user", "content":"Hi"}],
+    max_tokens=16, temperature=0,
+)
+print(reply.choices[0].message.content)</pre></div>
+</div>
+<p class="fine">Start with the packaged Qwen2.5-0.5B engine on a CUDA GPU. The quickstart covers the pinned model download, environment check, and first request.</p>
+<section><h2>Choose your starting point</h2><div class="grid">
+<article class="card"><div class="number">01 / USE</div><h3>Serve an existing engine</h3><p>One command starts the packaged backend. Send text or chat requests through the OpenAI Python client and stream the response.</p><a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/API.md">API and examples →</a></article>
+<article class="card"><div class="number">02 / BUILD</div><h3>Construct a new candidate</h3><p>Define the model, hardware, workload, and checks. Run a coding agent against the task and inspect feedback from actual execution.</p><a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/DEVELOPMENT.md">Development workflow →</a></article>
+<article class="card"><div class="number">03 / STUDY</div><h3>Co-design storage and inference</h3><p>Explore KV save/restore and paired session consumers with the separate Qwen3-8B experiments and published request records.</p><a href="https://github.com/yanchaomei/inference-forge/blob/main/experiments/qwen3_8b/README.md">8B experiments →</a></article>
+</div></section>
+<section><h2>Model and feature support</h2><p>Each target has its own execution path and validation record.</p>
+<table class="support"><thead><tr><th>Target</th><th>Available path</th><th>Scope</th></tr></thead><tbody>
+<tr><td>Qwen2.5-0.5B-Instruct</td><td><span class="tag">Packaged serving</span></td><td>float32 · fixed-length greedy · HTTP/SSE · 512 total tokens</td></tr>
+<tr><td>Qwen3-8B</td><td><span class="tag study">Separate experiments</span></td><td>BF16 · host KV restore · session APIs · A40 study</td></tr>
+</tbody></table><p class="fine"><a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/SUPPORTED_MODELS.md">Full support matrix</a> · <a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/EXPERIMENTS.md">Measurements and methodology</a></p></section>
+<section class="community"><h2>Build something reproducible.</h2><p>Contribute a model task, a numerical check, a clear failure case, or a measured improvement. The repository includes issue forms, a development guide, and installation and protocol checks in CI.</p><div class="buttons"><a class="button primary" href="https://github.com/yanchaomei/inference-forge/blob/main/CONTRIBUTING.md">Contribution guide</a><a class="button" href="https://github.com/yanchaomei/inference-forge/issues/new/choose">Open an issue</a><a class="button" href="https://github.com/yanchaomei/inference-forge/blob/main/docs/ROADMAP.md">Roadmap</a></div></section>
+<section id="demo"><h2>Project resources</h2><div class="resources"><div><video controls playsinline preload="metadata" poster="demo-cover.png" aria-label="Recorded Qwen2.5-0.5B construction example"><source src="demo.mp4" type="video/mp4">Your browser cannot play this video. Use the video file link.</video><p class="fine">Recorded 0.5B construction example, 2026-10-30. 90-second captioned replay with shortened waits and no narration.</p></div><div><h3>Design, evidence, and source</h3><ul class="resource-links"><li><a href="project-introduction.pdf">34-page technical report</a><span>Architecture, KV storage, session semantics, and experiments.</span></li><li><a href="demo.mp4">Download the demo video</a><span>The existing construction and execution record.</span></li><li><a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/SPECIALIZATION.md">Specialization design</a><span>How model, hardware, and workload define the task.</span></li><li><a href="https://github.com/yanchaomei/inference-forge/blob/main/NOTICE.md">Dependencies and references</a></li></ul></div></div></section>
+</div></main><footer><div class="wrap foot"><span>InferenceForge · MIT license</span><span><a href="https://github.com/yanchaomei/inference-forge/blob/main/SECURITY.md">Security</a> · <a href="https://github.com/yanchaomei/inference-forge">GitHub</a> · <a href="https://github.com/yanchaomei/inference-forge/blob/main/docs/SUBMISSION.md">Project materials</a></span></div></footer>
+</body></html>

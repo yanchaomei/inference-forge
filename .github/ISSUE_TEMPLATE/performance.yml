@@ -1,0 +1,36 @@
+name: Performance report / 性能问题
+description: Report a slowdown or propose an improvement with comparable measurements.
+title: "[Performance]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        English and Chinese are welcome. Use synthetic or shareable requests and include all repeated samples.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and hardware / 版本与硬件
+      description: Compared commits or releases, model revision, precision, GPU/count, driver, and inference-forge doctor --json output.
+    validations:
+      required: true
+  - type: textarea
+    id: workload
+    attributes:
+      label: Commands and workload / 命令与负载
+      description: Launch/request commands, input/output lengths, concurrency, cache conditions, and the metric being compared.
+    validations:
+      required: true
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Measurements / 测量
+      description: Warmup, repetitions, raw samples, medians, variation, and failures. Include both versions when reporting a regression.
+    validations:
+      required: true
+  - type: textarea
+    id: correctness
+    attributes:
+      label: Correctness and interpretation / 正确性与分析
+      description: Which correctness checks ran? Explain the observed effect and, optionally, a suspected cause or proposed change.
+    validations:
+      required: true

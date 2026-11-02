@@ -1,11 +1,30 @@
-# 参与 InferenceForge
+# Contributing to InferenceForge
 
-欢迎贡献可复现的问题、推理任务、平台适配和性能改进。
+Contributions in English or Chinese are welcome. Useful starting points include a clearer example, a reproducible failure, a numerical check, a model request, or a measured performance improvement.
 
-1. Issue 中提供版本、模型、设备、复现命令与实际输出。请删除凭据、内部地址和业务数据。
-2. 修改保持小而完整。涉及数值、KV 或流式协议时，用独立参考和对应回归验证。
-3. 性能 PR 同时给出正确性结果、相同负载的前后原始测量、预热与重复次数；不要只提交最好一次。
-4. 生成代码请注明生成器、起始代码与预算，保留失败，不把未执行测试写成通过。
-5. 不在 PR 中上传模型权重、账户认证文件或不可公开的数据。
+## Report a problem
 
-维护流程：Issue 复现 → 小范围修复或实验 → 审查与远程验证 → 合并。现阶段重点是实际构造闭环、强基线复现和便宜有效的执行反馈。新模型与新硬件先验证一个完整任务，再扩展矩阵。
+Use the [issue forms](https://github.com/yanchaomei/inference-forge/issues/new/choose). Include the commit or version, model and revision, GPU, dependency versions, launch command, and smallest request that reproduces the behavior. `inference-forge doctor --json` provides a short environment report.
+
+For performance reports, include the workload and raw repeated measurements. For a new model, describe the target hardware, precision, context lengths, and application. Please report vulnerabilities through [SECURITY.md](SECURITY.md), and remove credentials and private prompts from public reports.
+
+## Make a change
+
+1. Fork the repository and work on a focused branch.
+2. Follow [Development](docs/DEVELOPMENT.md) for installation, code layout, and the relevant CPU or GPU checks.
+3. Keep the change small enough to review. Update examples and support limits when behavior changes.
+4. Open a PR describing the problem, resulting behavior, and commands actually run. Mark checks that were not run.
+
+Documentation and protocol work can start without a GPU. Numerical, KV, scheduling, and performance changes need the corresponding real-model checks on a test host. Maintainers review the change and its validation before merging; CI results and GPU measurements are reported separately.
+
+## Generated code and experiments
+
+Coding-agent contributions are welcome. State the generator/model, starting code, and generation budget where they affected the change. Review the generated code and record the checks you actually ran. For experiment contributions, retain unsuccessful trials and the source identity of measured candidates.
+
+A performance PR needs correctness results and comparable before/after measurements with the same model, precision, hardware, input/output lengths, warmup, and repetitions. Include raw samples and variation rather than only the fastest run. See [performance guidance](docs/DEVELOPMENT.md#performance-changes).
+
+## Files and attribution
+
+Keep weights, credentials, and private datasets out of commits. Public results should omit internal addresses and private business data while preserving the configuration needed to interpret them. Preserve upstream license and attribution notices for any reused code; see [NOTICE.md](NOTICE.md).
+
+Submitting a contribution makes it available under the project's [MIT license](LICENSE). There is no separate contribution agreement.

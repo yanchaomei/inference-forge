@@ -310,7 +310,7 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/v1/models":
                 self._json({"object": "list", "data": [self.runtime.identity()]})
             else:
-                self._json({"error": "unknown route"}, 404)
+                self._json(protocol.error_response(RequestError("unknown route", 404), 404), 404)
         except (BrokenPipeError, ConnectionResetError, TimeoutError):
             self.close_connection = True
 

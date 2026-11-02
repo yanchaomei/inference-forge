@@ -1,120 +1,104 @@
 # InferenceForge
 
-**为具体模型、硬件和场景，生成可独立运行的专用推理引擎。**
+[![CPU contracts](https://github.com/yanchaomei/inference-forge/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/yanchaomei/inference-forge/actions/workflows/check.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[快速运行](docs/QUICKSTART.md) · [34页作品介绍 PDF](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) · [观看演示](https://yanchaomei.github.io/inference-forge/) · [v0.2.0 运行源码](https://github.com/yanchaomei/inference-forge/releases/tag/v0.2.0) · [参赛提交说明](docs/SUBMISSION.md)
+**Build and run specialized inference engines for a model, a GPU, and a workload.**
 
-InferenceForge builds specialized inference engines for a specific model, hardware and workload. Coding agents construct and optimize the runtime with feedback from real execution; the resulting engine runs without an agent in its inference path.
+[English](README.md) · [简体中文](README.zh-CN.md) · [Quickstart](docs/QUICKSTART.md) · [API](docs/API.md) · [Supported models](docs/SUPPORTED_MODELS.md) · [Contributing](CONTRIBUTING.md)
 
-当前版本包含 Qwen2 自动构造示例，以及 Qwen3-8B 主机状态恢复和多会话实验。Coding Agent 生成与修改代码，远程 A40 执行固定验收；适合研究和 AI 基础设施团队探索模型、设备、负载专用化。
+InferenceForge uses coding agents and feedback from real execution to build inference engines. The resulting engine runs on its own: no agent or model-service account is needed to serve requests.
 
-我们的交付单位是一套可部署的引擎：源码、启动方式、支持范围与同条件实测结果。构造环境可以复用；生成结果可以采用不同的算子、KV 布局、批处理和内存策略。设计取舍见 [特化引擎路线](docs/SPECIALIZATION.md)。
+Start with the included Qwen2.5-0.5B engine, connect through the OpenAI Python SDK, or use the construction tools to develop a new candidate. The project is for researchers and AI infrastructure developers exploring model, hardware, and workload specialization.
 
-## 引擎与目标
+## Install and serve
 
-| 模型 / 硬件 / 场景 | 当前状态 | 入口 |
-| --- | --- | --- |
-| Qwen2.5-0.5B / 单 A40 / 短请求并发 | 已生成、验收及测量的开发示例 | [运行生成引擎](engines/README.md) |
-| Qwen3-8B / 单 A40 / BF16 状态恢复与多会话 | 实验性运行时、实际生成组件及逐输出状态检查；尚无成熟框架优势 | [8B实验入口](experiments/qwen3_8b/README.md) |
+Use Linux with Python 3.10+ and an NVIDIA GPU. The current serving target is **Qwen2.5-0.5B-Instruct, float32, single GPU**, validated historically on an A40. It accepts up to 512 total tokens and generates 1–64 tokens per request with fixed-length greedy decoding.
 
-先做完整的 8B 引擎及强基线对照，再扩展长上下文、MoE 和其他硬件。构造方法对比 VibeServe、MetaInfer；生成产物的推理性能对比 vLLM、SGLang。这是两个不同问题，分别报告。
-
-```text
-任务配置 → Coding Agent → 候选引擎 → 独立 GPU 评测
-              ↑                        │
-              └──── 结果与失败反馈 ────┘
-```
-
-## 已实现
-
-- 真实 Qwen2 数学、权重装载、每请求 KV、prefill/decode、HTTP/SSE 服务。
-- 实际外部 Coding Agent 调用、候选文件隔离、JSONL 记录和 token usage。
-- 统一远程参考、数值与缓存比较、流式文字及 token 检查、真实请求交错检查。
-- 预热和重复测量、错误留档、受限外部请求轨迹缩小。
-- 自动生成的批量解码示例，见 `examples/generated/batched/`。
-- 8B 主机 KV 保存/恢复，以及实际生成的配套存储与会话消费者；含四格交叉消融、显存预算与完整 logits 检查。
-
-## 已测结果
-
-2026-10-30，Qwen2.5-0.5B-Instruct / 单 A40 / float32 / 4 并发请求、每请求16 token。一次真实 Agent 调用生成批量解码实现，耗时约77.7秒，固定验收通过。按 A-B-B-A 顺序执行，每次含预热和3次测量：
-
-| 实现 | 第一次中位吞吐 | 第二次中位吞吐 |
-| --- | ---: | ---: |
-| 本项目初版逐请求运行时 | 63.92 token/s | 64.16 token/s |
-| Agent 生成的批量解码候选 | 150.82 token/s | 148.80 token/s |
-
-本次小负载配对比值几何平均约 **2.34×**。它是相对自身初版的开发对照；尚未证明优于 vLLM、SGLang、VibeServe，也不是生产 SLO 或大模型结果。详见 [实测数据](results/campaign-20261030.json) 与 [实验说明](docs/EXPERIMENTS.md)。
-
-2026-10-31 的8B实验中，锁页主机恢复组件相对自身初版快2.78–3.87倍，但恢复后16token总时间仅降低0.4%–4.6%。多会话联合版本的开发中位提升仅约0.815%，尚不足以证明稳健优势。完整[原始逐请求记录](results/qwen3-8b-sessions-20261031.json)与[复现范围](experiments/qwen3_8b/README.md)同时公开。
-
-## 快速开始
-
-**先运行已有引擎，不需要 Codex 或其他模型服务账号。** 在具备 NVIDIA GPU 的 Linux 主机上：
-
-```bash
-git clone --branch v0.2.0 https://github.com/yanchaomei/inference-forge.git
-cd inference-forge
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[inference,test]'
-```
-
-然后按 [运行指南](docs/QUICKSTART.md) 下载 Qwen2.5-0.5B-Instruct，启动生成的批处理引擎，发送普通和流式请求。服务提供 `/health`、`/v1/models` 和 `/v1/completions`。8B 存储与推理实验使用 [独立入口及依赖](experiments/qwen3_8b/README.md)。
-
-## 生成和优化新引擎
-
-需要本地 Python、已安装并登录的 Codex CLI，以及可 SSH 访问、安装 tmux 的 Linux GPU 服务器。代码编辑与生成在本地；模型执行在服务器。凭据不上传到 GPU 服务器。
+Install from source; this project is not currently published on PyPI:
 
 ```bash
 git clone https://github.com/yanchaomei/inference-forge.git
 cd inference-forge
-python -m pip install -e .
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install '.[inference]'
+inference-forge doctor --json
 ```
 
-在远程的独立环境安装推理依赖：
+Download the model using the [quickstart](docs/QUICKSTART.md#download-the-model), then start the service with its local directory:
 
 ```bash
-python -m pip install -e '.[inference,test]'
+inference-forge serve /path/to/Qwen2.5-0.5B-Instruct \
+  --port 8000 --served-model-name qwen2.5-0.5b
 ```
 
-从 [Qwen 官方模型页](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)准备模型。仓库不分发权重。任务记录了本次实测权重 SHA256；若使用不同权重版本，请先固定并验证该版本。
+The default address is `http://127.0.0.1:8000`. Check readiness with `curl --fail http://127.0.0.1:8000/health`.
 
-在仓库根目录配置本地控制器使用的远程路径和设备：
+## Use the OpenAI SDK
 
 ```bash
-export FORGE_MODEL_PATH=/path/on/gpu-server/Qwen2.5-0.5B-Instruct
-export FORGE_GPU_UUID=GPU-your-device-uuid
-
-inference-forge --task tasks/qwen25_05b/task.json \
-  --output runs/example-campaign --host user@gpu-server --port 22 \
-  --key ~/.ssh/id_ed25519 --remote-root /path/on/gpu-server/inference-forge \
-  --remote-python /path/to/venv/bin/python --rounds 1 \
-  --generator-model YOUR_AVAILABLE_CODEX_MODEL --clean-generator-config
+python -m pip install 'openai>=1.50,<3'
 ```
 
-运行器先测种子引擎，再运行生成器与固定验收。请指定账户实际可用的模型。`runs/` 保存提示词、原始生成事件、usage、候选快照、远程任务身份和结果。中断时先查看已记录的远程会话，避免重复启动。
+```python
+from openai import OpenAI
 
-只验收现有引擎，可在 GPU 服务器的仓库根目录运行：
-
-```bash
-forge-pilot --task tasks/qwen25_05b/task.json --output results/raw/local-check
+client = OpenAI(base_url="http://127.0.0.1:8000/v1", api_key="unused")
+response = client.chat.completions.create(
+    model="qwen2.5-0.5b",
+    messages=[{"role": "user", "content": "Explain KV caching in one sentence."}],
+    max_tokens=32,
+    temperature=0,
+)
+print(response.choices[0].message.content)
 ```
 
-## 验证与范围
+Text completions, plain-text chat messages, and streaming are supported. The service uses the model's chat template. See [API examples and supported parameters](docs/API.md) for streaming, usage, and request limits. Authentication and TLS belong at your gateway when exposing the service beyond loopback.
 
-v0.2.0发布前已在独立目录完成安装、25项CPU检查及真实A40复验：普通HTTP、中文SSE一致性、四请求并发、输入限制和12次完整词表参考比较通过。见[发布验证记录](results/release-v0.2.0-validation.json)。该检查确认运行路径，不是新增性能比较。
+## Build an engine
 
-在 GPU 环境设好模型路径后运行：
+The construction loop starts from a runnable seed, asks a coding agent to modify it, and evaluates candidates on a separate GPU host. Correctness checks and measured workload results feed the next iteration.
 
-```bash
-export CUDA_VISIBLE_DEVICES=$FORGE_GPU_UUID
-python -m pytest tests -q
+```text
+Model + hardware + workload → Coding agent → Candidate engine → GPU evaluation
+                                  ↑                                  │
+                                  └──────── execution feedback ──────┘
 ```
 
-首页快速开始仍对应短上下文 Qwen2.5-0.5B，服务上限512 token、固定长度greedy输出。8B实验采用独立依赖环境和入口，见[实验说明](experiments/qwen3_8b/README.md)。完整8B构造方法对照、多硬件、独立留出与生产服务性能仍在推进。
+Use `inference-forge construct --help` for the construction CLI and [Development](docs/DEVELOPMENT.md#construct-a-candidate) for setup and a full command. Construction requires a configured coding agent; serving an existing engine does not.
 
-8B 准备工具在 [scripts/prepare_model.py](scripts/prepare_model.py)：消费目标配置，在 GPU 服务器下载指定 revision，并用官方记录校验全部分片、配置和 tokenizer。它只完成模型准备，不代表构造或推理验收成功。
+## Models and experiments
 
-## 参与与来源
+| Target | What you can run | Guide |
+| --- | --- | --- |
+| Qwen2.5-0.5B-Instruct / float32 / single A40 | Packaged engine, batched decoding, HTTP and SSE | [Quickstart](docs/QUICKSTART.md) |
+| Qwen3-8B / BF16 / single A40 | Separate KV save/restore and multi-session experiments | [8B experiments](experiments/qwen3_8b/README.md) |
 
-代码采用 [MIT](LICENSE)。见 [贡献指南](CONTRIBUTING.md)、[依赖与研究来源](NOTICE.md)、[系统说明](docs/ARCHITECTURE.md)。欢迎提交可复现失败和同条件性能改进，不需要先提交复杂架构。
+Qwen3-8B is not a `serve` target. Run `inference-forge models --json` to list serving targets, or consult the [support matrix](docs/SUPPORTED_MODELS.md).
+
+On a single A40 with float32, four concurrent requests, and 16 output tokens per request, the 0.5B batched candidate measured **2.34×** the throughput of this project's initial sequential runtime. The separate 8B storage/session experiment recorded a **0.815%** reduction in median total time over its original components across three development repeats. See the [0.5B comparison and scope](docs/EXPERIMENTS.md) and [exploratory 8B results](experiments/qwen3_8b/README.md#结果与未解决的问题) for raw samples and interpretation.
+
+## Documentation
+
+| I want to… | Start here |
+| --- | --- |
+| Install, download a model, and send a request | [Quickstart](docs/QUICKSTART.md) |
+| Connect an application | [API reference](docs/API.md) |
+| Check models, precision, and hardware | [Supported models](docs/SUPPORTED_MODELS.md) |
+| Change the code or construct an engine | [Development](docs/DEVELOPMENT.md) |
+| Understand the design | [Architecture](docs/ARCHITECTURE.md) · [Specialization](docs/SPECIALIZATION.md) |
+| See what's next | [Roadmap](docs/ROADMAP.md) |
+| Review a release | [Releases](https://github.com/yanchaomei/inference-forge/releases) · [v0.2.0 notes](docs/RELEASE-v0.2.0.md) |
+
+## Contribute
+
+Reproducible failures, clearer examples, numerical checks, and measured performance improvements are welcome. Start with the [contribution guide](CONTRIBUTING.md), [issue forms](https://github.com/yanchaomei/inference-forge/issues/new/choose), or [security policy](SECURITY.md).
+
+## Resources
+
+- [Demo and video](https://yanchaomei.github.io/inference-forge/) — the recorded 0.5B construction example.
+- [34-page project introduction](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) and [submission materials](docs/SUBMISSION.md).
+- [v0.2.0 validation record](results/release-v0.2.0-validation.json) — the historical HTTP/SSE, concurrency, and numerical checks for that release.
+
+Code is licensed under [MIT](LICENSE). Model weights are downloaded separately under their own licenses. See [NOTICE](NOTICE.md) for dependencies and research references.
