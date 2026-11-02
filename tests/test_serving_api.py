@@ -4,6 +4,7 @@ This validates transport/scheduling, not real-model numerical quality or speed.
 """
 from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from pathlib import Path
 import threading
 import urllib.request
@@ -51,15 +52,16 @@ class Tokenizer:
     def decode(self, ids, **kwargs):
         return ''.join(['_', '你', '好', '！'][token] for token in ids)
 
-    def apply_chat_template(self, messages, tokenize, add_generation_prompt):
+    def apply_chat_template(self, messages, tokenize, add_generation_prompt, return_dict=True):
         assert tokenize and add_generation_prompt
         self.messages = messages
-        return self.encode('|'.join(m['role'] + ':' + m['content'] for m in messages) + '|assistant:')
+        ids = self.encode('|'.join(m['role'] + ':' + m['content'] for m in messages) + '|assistant:')
+        return {'input_ids':ids} if return_dict else ids
 
 
-@pytest.fixture
-def service():
-    tokenizer = Tokenizer()
+@contextmanager
+def live_service(tokenizer=None):
+    tokenizer = tokenizer or Tokenizer()
     server = create_server(Engine(), tokenizer, port=0, served_model_name='tiny')
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -72,6 +74,29 @@ def service():
             thread.join(timeout=5)
             server.server_close()
             server.runtime.close()
+
+
+@pytest.fixture
+def service():
+    with live_service() as running:
+        yield running
+
+
+def test_chat_uses_real_transformers_template_return_contract():
+    from tokenizers import Tokenizer as RustTokenizer
+    from tokenizers.models import WordLevel
+    from tokenizers.pre_tokenizers import Whitespace
+    from transformers import PreTrainedTokenizerFast
+
+    raw = RustTokenizer(WordLevel({'[UNK]':0,'hello':1,'world':2,'assistant':3}, unk_token='[UNK]'))
+    raw.pre_tokenizer = Whitespace()
+    tokenizer = PreTrainedTokenizerFast(tokenizer_object=raw, unk_token='[UNK]',
+        chat_template="{% for m in messages %}{{ m['content'] }} {% endfor %}assistant")
+    with live_service(tokenizer) as (client, _, _):
+        reply = client.chat.completions.create(model='tiny',
+            messages=[{'role':'user','content':'hello world'}],max_tokens=3,temperature=0)
+        assert reply.usage.prompt_tokens == 3
+        assert reply.choices[0].message.content == 'hello world assistant'
 
 
 def test_sdk_text_completions_and_existing_token_fields(service):

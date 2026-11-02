@@ -50,7 +50,8 @@ def normalize_request(payload, *, chat, model, tokenizer):
                     or not isinstance(message.get('content'),str)):
                 raise ProtocolError('Each message needs a system/user/assistant role and text content', param='messages')
         try:
-            normalized['input_ids'] = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True)
+            normalized['input_ids'] = tokenizer.apply_chat_template(
+                messages, tokenize=True, add_generation_prompt=True, return_dict=False)
         except (ValueError,TypeError) as exc:
             raise ProtocolError(f'Cannot apply this model chat template: {exc}', param='messages') from exc
     return normalized, include_usage
