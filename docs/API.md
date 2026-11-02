@@ -22,7 +22,7 @@ Send JSON request bodies with `Content-Type: application/json`. The server binds
 
 ## Python client
 
-Install the client with `python -m pip install 'openai>=1.50,<3'`.
+Install the client with `python -m pip install 'openai>=2.54,<3'`.
 
 A runnable example is in [examples/clients/chat.py](../examples/clients/chat.py):
 

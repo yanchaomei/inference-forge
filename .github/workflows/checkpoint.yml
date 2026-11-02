@@ -1,0 +1,51 @@
+name: Real checkpoint CPU acceptance
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/checkpoint.yml
+      - scripts/check_checkpoint.py
+permissions:
+  contents: read
+jobs:
+  checkpoint-cpu:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[checkpoint]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install '.[inference,client]'
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/forge-model
+          key: qwen25-05b-7ae557604adf67be50417f59c2c2f167def9a775
+      - name: Download the pinned public checkpoint
+        env:
+          FORGE_TEST_MODEL: ${{ runner.temp }}/forge-model
+        run: |
+          python - <<'PY'
+          import os
+          from huggingface_hub import snapshot_download
+          snapshot_download(repo_id='Qwen/Qwen2.5-0.5B-Instruct',
+                            revision='7ae557604adf67be50417f59c2c2f167def9a775',
+                            local_dir=os.environ['FORGE_TEST_MODEL'],
+                            allow_patterns=['*.json','*.safetensors','merges.txt','vocab.json'])
+          PY
+      - name: Exercise the installed real-model service
+        run: |
+          mkdir "$RUNNER_TEMP/forge-checkpoint-run"
+          cp scripts/check_checkpoint.py "$RUNNER_TEMP/forge-checkpoint-run/"
+          cd "$RUNNER_TEMP/forge-checkpoint-run"
+          unset PYTHONPATH
+          python -c 'import forge,sys; from pathlib import Path; assert Path(forge.__file__).resolve().is_relative_to(Path(sys.prefix).resolve())'
+          python check_checkpoint.py --model "$RUNNER_TEMP/forge-model" --output receipts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-checkpoint-cpu-receipts
+          path: ${{ runner.temp }}/forge-checkpoint-run/receipts

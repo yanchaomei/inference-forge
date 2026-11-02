@@ -65,7 +65,7 @@ The completion includes `choices[0].text`, token usage, and the original `text` 
 ## Send a chat request
 
 ```bash
-python -m pip install 'openai>=1.50,<3'
+python -m pip install 'openai>=2.54,<3'
 ```
 
 ```python

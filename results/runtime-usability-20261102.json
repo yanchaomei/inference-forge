@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-02",
+  "scope": "remote CPU installation, actual HTTP/SDK protocol, and tiny random-checkpoint numerics; not a trained-model GPU/performance result",
+  "tested_commit": "003a343a4fb90b6968d758e3e0df73e4767b4b2a",
+  "ci_url": "https://github.com/yanchaomei/inference-forge/actions/runs/41370511848",
+  "core_cli_tests_passed": 29,
+  "http_sdk_tests_passed": 11,
+  "tiny_model_numerical_tests_passed": 1,
+  "wheel_installed_outside_checkout": true,
+  "http_tests_used_installed_package_outside_checkout": true,
+  "versions": {
+    "torch": "2.10.0+cpu",
+    "transformers": "5.22.1",
+    "safetensors": "0.8.0",
+    "openai": "2.54.0",
+    "pytest": "9.2.0"
+  },
+  "source_sha256": {
+    "forge/cli.py": "ec9be289df521dcacb7c289225ddbbd5af4f5b1aa821c8983e1d0ffce59a0d93",
+    "forge/protocol.py": "e6985a0dfe24f0b1b1819582d6e2217e7896d3693cbbde6f9491177b9ea06cbc",
+    "forge/serving.py": "ef8699f777cd3f7d38bde09ccf19ec294880da7fef4ece5dd4055525353e0784",
+    "forge/backends/qwen2/engine.py": "372e4eb54a94f729cc53cb8760c1594fc8ab3899ec585254419dfa1b1ec3c54e"
+  },
+  "backend_origin": "Generated numerical backend from v0.2.0, unchanged bytes",
+  "gpu_regression": {
+    "status": "not_run",
+    "reason": "A40 hosts unreachable; pending a fresh real-checkpoint service regression"
+  },
+  "negative_regressions": {
+    "missing_cli_and_service_run": 41365464910,
+    "native_stream_usage_failure_run": 41366228074,
+    "unknown_route_error_failure_run": 41367129880
+  }
+}

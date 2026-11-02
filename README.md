@@ -38,7 +38,7 @@ The default address is `http://127.0.0.1:8000`. Check readiness with `curl --fai
 ## Use the OpenAI SDK
 
 ```bash
-python -m pip install 'openai>=1.50,<3'
+python -m pip install 'openai>=2.54,<3'
 ```
 
 ```python
@@ -89,7 +89,7 @@ On a single A40 with float32, four concurrent requests, and 16 output tokens per
 | Change the code or construct an engine | [Development](docs/DEVELOPMENT.md) |
 | Understand the design | [Architecture](docs/ARCHITECTURE.md) · [Specialization](docs/SPECIALIZATION.md) |
 | See what's next | [Roadmap](docs/ROADMAP.md) |
-| Review a release | [Releases](https://github.com/yanchaomei/inference-forge/releases) · [v0.2.0 notes](docs/RELEASE-v0.2.0.md) |
+| Review a release | [Releases](https://github.com/yanchaomei/inference-forge/releases) · [Release candidate notes](docs/RELEASE-v0.3.0rc1.md) · [Changelog](CHANGELOG.md) |
 
 ## Contribute
 

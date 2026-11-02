@@ -38,7 +38,7 @@ inference-forge serve /path/to/Qwen2.5-0.5B-Instruct \
 ## 使用 OpenAI SDK
 
 ```bash
-python -m pip install 'openai>=1.50,<3'
+python -m pip install 'openai>=2.54,<3'
 ```
 
 ```python

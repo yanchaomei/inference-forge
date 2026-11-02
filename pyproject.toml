@@ -19,7 +19,7 @@ Issues = "https://github.com/yanchaomei/inference-forge/issues"
 [project.optional-dependencies]
 inference = ["torch>=2.6,<3", "transformers>=5.3,<6", "safetensors>=0.7,<1"]
 test = ["pytest>=8.4,<10"]
-client = ["openai>=1.50,<3"]
+client = ["openai>=2.54,<3"]
 
 [project.scripts]
 inference-forge = "forge.cli:main"
