@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/checkpoint.yml
       - scripts/check_checkpoint.py
+      - forge/**
 permissions:
   contents: read
 jobs:
