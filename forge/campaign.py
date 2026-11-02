@@ -140,7 +140,7 @@ def source_digest(path):
     return {name:hashlib.sha256((Path(path)/"forge"/name).read_bytes()).hexdigest() for name in RUNTIME_FILES}
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task",required=True)
     parser.add_argument("--output",required=True)
@@ -153,7 +153,7 @@ def main():
     parser.add_argument("--generator-timeout",type=int,default=360)
     parser.add_argument("--generator-model",default=None)
     parser.add_argument("--clean-generator-config",action="store_true",help="Use CLI defaults plus saved auth, without optional user MCP configuration")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     root=Path.cwd();out=Path(args.output).resolve()
     if not re.fullmatch(r'[a-z0-9-]{1,40}',out.name):
         parser.error("output directory name must be short lowercase letters, digits or hyphens")

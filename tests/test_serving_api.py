@@ -62,7 +62,7 @@ def service():
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     base = f'http://127.0.0.1:{server.server_address[1]}'
-    with OpenAI(base_url=base + '/v1', api_key='local-test', max_retries=0) as client:
+    with OpenAI(base_url=base + '/v1', api_key='local-test', max_retries=0, timeout=10) as client:
         try:
             yield client, base, tokenizer
         finally:
