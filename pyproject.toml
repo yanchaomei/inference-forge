@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-inference-forge"
-version = "0.2.0"
+version = "0.3.0rc1"
 requires-python = ">=3.10"
-description = "Execution-guided specialized inference engine pilot"
+description = "Build and run specialized inference engines with execution feedback"
 readme = "README.md"
 license = {text = "MIT"}
 
@@ -19,9 +19,11 @@ Issues = "https://github.com/yanchaomei/inference-forge/issues"
 [project.optional-dependencies]
 inference = ["torch>=2.6,<3", "transformers>=5.3,<6", "safetensors>=0.7,<1"]
 test = ["pytest>=8.4,<10"]
+client = ["openai>=2.54,<3"]
 
 [project.scripts]
-inference-forge = "forge.campaign:main"
+inference-forge = "forge.cli:main"
+forge-campaign = "forge.campaign:main"
 forge-pilot = "forge.pilot:main"
 
 [tool.setuptools.packages.find]

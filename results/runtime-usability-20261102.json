@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-02",
+  "scope": "remote installation and HTTP/SDK checks, tiny-model numerics, and real Qwen2.5-0.5B CPU/A40 functional acceptance; not a performance comparison",
+  "tested_commit": "39f2de062aa50c0b87940296d75faa7a0e1ea2dc",
+  "ci_url": "https://github.com/yanchaomei/inference-forge/actions/runs/41378078586",
+  "core_cli_tests_passed": 29,
+  "http_sdk_tests_passed": 12,
+  "tiny_model_numerical_tests_passed": 1,
+  "wheel_installed_outside_checkout": true,
+  "http_tests_used_installed_package_outside_checkout": true,
+  "versions": {
+    "torch": "2.10.0+cpu",
+    "transformers": "5.22.1",
+    "safetensors": "0.8.0",
+    "openai": "2.54.0",
+    "pytest": "9.2.0"
+  },
+  "source_sha256": {
+    "forge/cli.py": "ec9be289df521dcacb7c289225ddbbd5af4f5b1aa821c8983e1d0ffce59a0d93",
+    "forge/protocol.py": "7764f5e4d5d547df893bd51f5c0489da2efd86774a9c440abd893e08a27f7cab",
+    "forge/serving.py": "ef8699f777cd3f7d38bde09ccf19ec294880da7fef4ece5dd4055525353e0784",
+    "forge/backends/qwen2/engine.py": "372e4eb54a94f729cc53cb8760c1594fc8ab3899ec585254419dfa1b1ec3c54e"
+  },
+  "backend_origin": "Generated numerical backend from v0.2.0, unchanged bytes",
+  "gpu_regression": {
+    "status": "pass",
+    "hardware": "NVIDIA A40",
+    "installed_cli_launched": true,
+    "receipt": "runtime-checkpoint-a40-20261102.json"
+  },
+  "negative_regressions": {
+    "missing_cli_and_service_run": 41365464910,
+    "native_stream_usage_failure_run": 41366228074,
+    "unknown_route_error_failure_run": 41367129880,
+    "real_tokenizer_return_shape_failure_run": 41375454223
+  },
+  "real_checkpoint_cpu": {
+    "status": "pass",
+    "receipt": "runtime-checkpoint-cpu-20261102.json"
+  }
+}

@@ -1,0 +1,34 @@
+name: Model request / 模型支持需求
+description: Describe a model and workload you want to run.
+title: "[Model]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        English and Chinese are welcome. Describe the concrete workload so support can start with a runnable target.
+  - type: textarea
+    id: model
+    attributes:
+      label: Model / 模型
+      description: Official checkpoint URL, revision, architecture, and license.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Hardware and precision / 硬件与精度
+      description: GPU model/count/memory, intended precision, and operating system.
+    validations:
+      required: true
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload / 使用场景
+      description: What application needs this model? Include input/output lengths, concurrency, and the latency or throughput that matters.
+    validations:
+      required: true
+  - type: textarea
+    id: existing
+    attributes:
+      label: Existing attempts / 已有尝试
+      description: Optional. Include the InferenceForge version, command, failure, or reference implementation if you tried one.

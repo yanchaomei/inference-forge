@@ -1,0 +1,36 @@
+name: Bug report / 问题报告
+description: Report a reproducible runtime, API, installation, or construction failure.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        English and Chinese are welcome. Remove credentials and private prompts.
+        For vulnerabilities, email yanchaomei@mail.ustc.edu.cn instead of opening a public issue.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Version and environment / 版本与环境
+      description: Commit or release, model and revision, GPU, OS, and inference-forge doctor --json output.
+      placeholder: |
+        Commit/version:
+        Model/revision:
+        GPU and driver:
+        Doctor output:
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction / 复现步骤
+      description: Include the installation or launch command and a minimal request with synthetic text.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior / 预期与实际表现
+      description: Include the error and relevant logs. For a regression, include the last working version if known.
+    validations:
+      required: true

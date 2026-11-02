@@ -1,0 +1,94 @@
+{
+  "status": "pass",
+  "scope": "real Qwen2.5-0.5B cpu functional acceptance; not a performance comparison",
+  "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "model_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+  "device": "cpu",
+  "dtype": "float32",
+  "reference_cases": 4,
+  "installed_cli_launched": false,
+  "gpu_name": null,
+  "checker_sha256": "ee8f47348c3cd0ed05384e20a902e634e7cef9aae2e74651ac1fd97a6ccb10d7",
+  "numeric_modes_per_case": 2,
+  "native_concurrent_requests": 4,
+  "sdk_cases": [
+    {
+      "route": "completions",
+      "case": 0,
+      "token_ids": [
+        12095,
+        13,
+        1084,
+        374,
+        279,
+        7772,
+        3283,
+        304
+      ],
+      "text": " Paris. It is the largest city in",
+      "stream_matches": true
+    },
+    {
+      "route": "completions",
+      "case": 1,
+      "token_ids": [
+        58695,
+        107576,
+        115103,
+        3837,
+        20412,
+        105492,
+        104773,
+        106001
+      ],
+      "text": "中国安徽省合肥市，是中华人民共和国教育部",
+      "stream_matches": true
+    },
+    {
+      "route": "chat.completions",
+      "case": 0,
+      "token_ids": [
+        82707,
+        47430,
+        11,
+        476,
+        5309,
+        12,
+        1130,
+        47430
+      ],
+      "text": "KV caching, or Key-Value caching",
+      "stream_matches": true
+    },
+    {
+      "route": "chat.completions",
+      "case": 1,
+      "token_ids": [
+        58695,
+        107527,
+        99562,
+        103987,
+        107576,
+        115103,
+        1773,
+        151645
+      ],
+      "text": "中国科学技术大学位于安徽省合肥市。<|im_end|>",
+      "stream_matches": true
+    }
+  ],
+  "versions": {
+    "torch": "2.10.0+cpu",
+    "transformers": "5.22.1",
+    "safetensors": "0.8.0",
+    "openai": "2.54.0",
+    "agentic-inference-forge": "0.3.0rc1"
+  },
+  "source_sha256": {
+    "forge.serving": "ef8699f777cd3f7d38bde09ccf19ec294880da7fef4ece5dd4055525353e0784",
+    "forge.protocol": "7764f5e4d5d547df893bd51f5c0489da2efd86774a9c440abd893e08a27f7cab",
+    "forge.backends.qwen2.engine": "372e4eb54a94f729cc53cb8760c1594fc8ab3899ec585254419dfa1b1ec3c54e"
+  },
+  "tested_commit": "39f2de062aa50c0b87940296d75faa7a0e1ea2dc",
+  "ci_url": "https://github.com/yanchaomei/inference-forge/actions/runs/41378078748"
+}
