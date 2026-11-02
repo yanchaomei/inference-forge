@@ -376,7 +376,8 @@ class Handler(BaseHTTPRequestHandler):
                     if "error" in message:
                         raise RequestError(message["error"], 500)
                     self._sse(protocol.response(message, self.runtime.model_name, created,
-                                                chat=chat, streaming=True))
+                        chat=chat, streaming=True,
+                        preserve_stream_usage=not chat and 'model' not in payload and not include_usage))
                     if "finish_reason" in message:
                         if include_usage:
                             self._sse(protocol.usage_chunk(message, self.runtime.model_name, created, chat=chat))

@@ -63,7 +63,8 @@ def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     # Existing campaign commands begin with --task/--output/etc. Keep their
     # parser and meaning; the new subcommand provides an explicit entry point.
-    if argv and (argv[0] == 'construct' or (argv[0].startswith('--') and argv[0] not in ('--help','--version')):
+    legacy = bool(argv) and argv[0].startswith('--') and argv[0] not in ('--help','--version')
+    if legacy or (argv and argv[0] == 'construct'):
         if argv[0] == 'construct':
             argv = argv[1:]
         from .campaign import main as construct

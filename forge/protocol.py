@@ -61,7 +61,7 @@ def envelope(request_id, model, created, *, chat, streaming=False):
             'object':'chat.completion.chunk' if chat and streaming else ('chat.completion' if chat else 'text_completion')}
 
 
-def response(message, model, created, *, chat, streaming=False):
+def response(message, model, created, *, chat, streaming=False, preserve_stream_usage=False):
     result = {**message, **envelope(message['request_id'],model,created,chat=chat,streaming=streaming)}
     finish = message.get('finish_reason')
     if chat:
@@ -73,7 +73,7 @@ def response(message, model, created, *, chat, streaming=False):
         choice = {'index':0, 'text':'' if streaming and finish else message.get('text',''),
                   'logprobs':None, 'finish_reason':finish}
     result['choices'] = [choice]
-    if streaming:
+    if streaming and not preserve_stream_usage:
         result.pop('usage',None)
     return result
 

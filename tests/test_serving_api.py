@@ -100,6 +100,7 @@ def test_sdk_chat_uses_template_and_stream_does_not_repeat_final_text(service):
     assert ''.join(c.choices[0].delta.content or '' for c in chunks) == normal.choices[0].message.content
     assert chunks[-1].choices[0].finish_reason == 'length'
     assert all(c.object == 'chat.completion.chunk' and c.model == 'tiny' for c in chunks)
+    assert all(c.usage is None for c in chunks)
 
 
 def test_streamed_completions_include_usage_on_request(service):
@@ -109,6 +110,7 @@ def test_streamed_completions_include_usage_on_request(service):
     assert ''.join(c.choices[0].text for c in chunks if c.choices) == '你好！'
     assert chunks[-1].choices == [] and chunks[-1].usage.completion_tokens == 3
     assert chunks[-2].choices[0].finish_reason == 'length'
+    assert sum(c.usage is not None for c in chunks) == 1
 
 
 def test_existing_evaluator_reads_the_live_stream(service):
