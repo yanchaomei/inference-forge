@@ -3,6 +3,7 @@
 This validates transport/scheduling, not real-model numerical quality or speed.
 """
 from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import threading
 import urllib.request
@@ -13,6 +14,7 @@ import torch
 from openai import OpenAI, BadRequestError, NotFoundError
 
 from forge.serving import create_server
+from forge.evaluate import stream_request
 
 
 @dataclass
@@ -107,6 +109,24 @@ def test_streamed_completions_include_usage_on_request(service):
     assert ''.join(c.choices[0].text for c in chunks if c.choices) == '你好！'
     assert chunks[-1].choices == [] and chunks[-1].usage.completion_tokens == 3
     assert chunks[-2].choices[0].finish_reason == 'length'
+
+
+def test_existing_evaluator_reads_the_live_stream(service):
+    _, base, _ = service
+    result = stream_request(base, {'request_id':'legacy-wire','input_ids':[0,0,0],'max_tokens':3})
+    assert result['token_ids'] == [1,2,3]
+    assert result['text'] == '你好！'
+    assert result['usage'] == {'prompt_tokens':3,'completion_tokens':3,'total_tokens':6}
+
+
+def test_concurrent_sdk_requests_keep_outputs_and_ids_separate(service):
+    client, _, _ = service
+    def complete(prompt):
+        return client.completions.create(model='tiny', prompt=prompt, max_tokens=3)
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        responses = list(pool.map(complete,['abc','abcd','abcde','abcdef']))
+    assert [r.choices[0].text for r in responses] == ['你好！','好！你','！你好','你好！']
+    assert len({r.id for r in responses}) == 4
 
 
 @pytest.mark.parametrize('kwargs', [{'temperature':0.7}, {'n':2}, {'stop':['!']}, {'max_tokens':65}])
