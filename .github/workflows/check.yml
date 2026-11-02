@@ -42,6 +42,6 @@ jobs:
       - name: Run the SDK against the installed HTTP server
         run: |
           mkdir "$RUNNER_TEMP/forge-http-tests"
-          cp tests/test_serving_api.py "$RUNNER_TEMP/forge-http-tests/"
+          cp tests/test_serving_api.py tests/test_qwen2_cpu.py "$RUNNER_TEMP/forge-http-tests/"
           cd "$RUNNER_TEMP/forge-http-tests"
-          python -m pytest test_serving_api.py -q
+          python -m pytest test_serving_api.py test_qwen2_cpu.py -q

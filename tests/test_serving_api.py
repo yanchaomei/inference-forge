@@ -146,3 +146,11 @@ def test_unknown_model_and_unsupported_messages_are_clear_errors(service):
         client.completions.create(model='missing', prompt='abc')
     with pytest.raises(BadRequestError):
         client.chat.completions.create(model='tiny', messages=[{'role':'user','content':[{'type':'text','text':'hi'}]}])
+
+
+def test_unknown_get_route_returns_the_same_error_shape(service):
+    client, _, _ = service
+    with pytest.raises(NotFoundError) as error:
+        client.models.retrieve('missing')
+    assert error.value.body['type'] == 'invalid_request_error'
+    assert error.value.body['message'] == 'unknown route'
