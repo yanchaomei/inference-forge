@@ -7,7 +7,7 @@ The serving registry is intentionally small. Run `inference-forge models --json`
 | Qwen/Qwen2.5-0.5B-Instruct | `inference-forge serve MODEL_PATH` | float32 | Single NVIDIA A40 | Input + output ≤512 tokens; 1–64 output tokens |
 | Qwen/Qwen3-8B | Separate KV and session experiment scripts | BF16 | Single NVIDIA A40, TP=1 | Up to 4096 total context in the documented experiments |
 
-**Qwen3-8B is not a serving target.** Its configuration and experimental Python APIs do not imply support through the HTTP service. Other models, quantization formats, tensor parallelism, CPU serving, and additional hardware are not currently validated.
+**Qwen3-8B is not a serving target.** Its configuration and experimental Python APIs do not imply support through the HTTP service. The `serve` CLI targets CUDA; CPU execution is available in the functional test harness. Other models, quantization formats, tensor parallelism, and additional hardware are not currently validated.
 
 ## Qwen2.5-0.5B serving
 
@@ -19,7 +19,9 @@ The serving registry is intentionally small. Run `inference-forge models --json`
 
 Download the complete checkpoint and point `serve` at its local directory. The API model ID is an alias selected by `--served-model-name`, not a model downloader or an architecture selector.
 
-Historical validation for v0.2.0 covered HTTP/SSE, four concurrent requests, input limits, and 12 full-vocabulary reference comparisons on an A40. See the [release validation record](../results/release-v0.2.0-validation.json). These records belong to that release; they do not measure the newer SDK/chat layer.
+The new installed CLI and SDK/chat path pass [A40 functional acceptance](../results/runtime-checkpoint-a40-20261102.json) with Torch2.11.0+cu128, Transformers5.3.0 and OpenAI2.54.0. A separate [CPU check](../results/runtime-checkpoint-cpu-20261102.json) uses Torch2.10.0+cpu and Transformers5.22.1. Both use the pinned real checkpoint and compare with an independent reference.
+
+Historical validation for v0.2.0 additionally covered 12 full-vocabulary reference comparisons on an A40. See that version's [release validation record](../results/release-v0.2.0-validation.json).
 
 ## Qwen3-8B experiments
 

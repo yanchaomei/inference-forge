@@ -9,7 +9,7 @@
 - Add English/Chinese entry pages, an API reference, support matrix, development guide, runnable client, and contribution templates.
 - Build wheels in CI, install them outside the checkout, and exercise the installed HTTP service. Add a tiny local Qwen2 checkpoint test against an independent model forward pass.
 
-This is a release candidate. CPU installation, protocol, and tiny-model checks are recorded separately from the real-checkpoint GPU regression, which is pending for this revision. The numerical backend is byte-identical to the generated backend validated in v0.2.0; the CLI and serving layer are new.
+This is the first release candidate of the new serving interface. CPU installation/protocol checks and real-checkpoint CPU/A40 functional acceptance passed. The numerical backend is byte-identical to the generated backend validated in v0.2.0; the CLI and serving layer are new. See the release notes for the exact workloads and records.
 
 ## 0.2.0 — 2026-10-31
 

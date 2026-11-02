@@ -13,7 +13,7 @@ Start with the included Qwen2.5-0.5B engine, connect through the OpenAI Python S
 
 ## Install and serve
 
-Use Linux with Python 3.10+ and an NVIDIA GPU. The current serving target is **Qwen2.5-0.5B-Instruct, float32, single GPU**, validated historically on an A40. It accepts up to 512 total tokens and generates 1–64 tokens per request with fixed-length greedy decoding.
+Use Linux with Python 3.10+ and an NVIDIA GPU. The current serving target is **Qwen2.5-0.5B-Instruct, float32, single GPU**, validated through the installed CLI on an A40. It accepts up to 512 total tokens and generates 1–64 tokens per request with fixed-length greedy decoding.
 
 Install from source; this project is not currently published on PyPI:
 
@@ -99,6 +99,7 @@ Reproducible failures, clearer examples, numerical checks, and measured performa
 
 - [Demo and video](https://yanchaomei.github.io/inference-forge/) — the recorded 0.5B construction example.
 - [34-page project introduction](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) and [submission materials](docs/SUBMISSION.md).
+- [Current CPU/A40 acceptance](results/runtime-usability-20261102.json).
 - [v0.2.0 validation record](results/release-v0.2.0-validation.json) — the historical HTTP/SSE, concurrency, and numerical checks for that release.
 
 Code is licensed under [MIT](LICENSE). Model weights are downloaded separately under their own licenses. See [NOTICE](NOTICE.md) for dependencies and research references.

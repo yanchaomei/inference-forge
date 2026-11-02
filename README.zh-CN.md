@@ -89,7 +89,7 @@ Qwen3-8B 尚未接入 `serve`。运行 `inference-forge models --json` 查看服
 | 修改代码或构造引擎 | [开发指南](docs/DEVELOPMENT.md) |
 | 理解设计 | [系统说明](docs/ARCHITECTURE.md) · [特化路线](docs/SPECIALIZATION.md) |
 | 了解下一步 | [路线图](docs/ROADMAP.md) |
-| 查看发布版本 | [Releases](https://github.com/yanchaomei/inference-forge/releases) · [v0.2.0 说明](docs/RELEASE-v0.2.0.md) |
+| 查看发布版本 | [Releases](https://github.com/yanchaomei/inference-forge/releases) · [新版本说明](docs/RELEASE-v0.3.0rc1.md) · [更新记录](CHANGELOG.md) |
 
 ## 参与贡献
 
@@ -99,6 +99,7 @@ Qwen3-8B 尚未接入 `serve`。运行 `inference-forge models --json` 查看服
 
 - [演示与视频](https://yanchaomei.github.io/inference-forge/)：已录制的 0.5B 构造示例。
 - [34 页作品介绍](https://yanchaomei.github.io/inference-forge/project-introduction.pdf) 与 [参赛材料](docs/SUBMISSION.md)。
+- [当前 CPU / A40 验证记录](results/runtime-usability-20261102.json)。
 - [v0.2.0 验证记录](results/release-v0.2.0-validation.json)：该历史版本的 HTTP/SSE、并发与数值检查。
 
 代码采用 [MIT](LICENSE) 许可证。模型权重单独下载并遵循其各自许可。依赖与研究来源见 [NOTICE](NOTICE.md)。

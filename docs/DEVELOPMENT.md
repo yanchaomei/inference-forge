@@ -86,6 +86,16 @@ The seed suite checks `forge/engine.py` and `forge/server.py`. Changes to the pa
 
 For packaging changes, build a wheel, install it into a fresh environment, leave the checkout, clear `PYTHONPATH`, and verify the CLI and backend imports. Include a real GPU request from that installed wheel when validating a release. An editable install alone does not check package contents.
 
+The real-checkpoint harness runs from a non-editable installation and a separate working directory:
+
+```bash
+python /path/to/checkout/scripts/check_checkpoint.py \
+  --model "$FORGE_MODEL_PATH" --output /path/to/new-receipts \
+  --device cuda --gpu-uuid "$FORGE_GPU_UUID"
+```
+
+It rejects an occupied device, builds an independent reference, launches the installed CLI, and checks the native and SDK routes. `--device cpu` uses the same service factory for a CPU functional check. The **Real checkpoint CPU acceptance** workflow can be run manually; a runtime/checker push marked `[checkpoint]` also requests it. Routine pull requests keep the smaller CPU suite.
+
 ## Construct a candidate
 
 Run construction from the repository root on your local controller. You need an installed and logged-in Codex CLI, SSH access to a Linux GPU host with tmux, and an available generator model. Install `.[inference,test]` in a separate environment on the GPU host and prepare the model there.

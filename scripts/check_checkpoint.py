@@ -75,10 +75,10 @@ def running_service(model, tokenizer, device, out):
             if worker.poll() is None:
                 os.killpg(worker.pid, signal.SIGINT)
                 try:
-                    worker.wait(timeout=15)
+                    worker.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     os.killpg(worker.pid, signal.SIGKILL)
-                    worker.wait()
+                    worker.wait(timeout=2)
 
 
 def main():
@@ -175,4 +175,8 @@ def main():
 
 
 if __name__ == '__main__':
+    def terminate(signum, frame):
+        # Let the service context clean up its owned CLI process on timeout.
+        raise SystemExit(128 + signum)
+    signal.signal(signal.SIGTERM, terminate)
     main()
